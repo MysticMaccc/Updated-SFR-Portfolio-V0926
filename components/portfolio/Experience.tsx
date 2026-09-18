@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Briefcase } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, Briefcase } from 'lucide-react';
 import type { Experience } from '@/types';
 
 const fadeUp = {
@@ -15,8 +15,16 @@ const stagger = {
   show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
 };
 
+function sortLatestFirst(experiences: Experience[]): Experience[] {
+  return [...experiences].sort((a, b) => {
+    if (a.is_current !== b.is_current) return a.is_current ? -1 : 1;
+    return (parseInt(b.start_date) || 0) - (parseInt(a.start_date) || 0);
+  });
+}
+
 export default function Experience({ experiences }: { experiences: Experience[] }) {
-  const [expanded, setExpanded] = useState<string | null>(experiences[0]?.id ?? null);
+  const sorted = sortLatestFirst(experiences);
+  const [expanded, setExpanded] = useState<string | null>(sorted[0]?.id ?? null);
 
   return (
     <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6">
@@ -29,8 +37,11 @@ export default function Experience({ experiences }: { experiences: Experience[] 
           animate="show"
           className="mb-10 sm:mb-14"
         >
-          <p className="text-xs font-semibold text-[#AF52DE] uppercase tracking-widest mb-3">Experience</p>
+          <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Experience</p>
           <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Work History</h1>
+          <p className="text-sm text-[#8E8E93] mt-3">
+            {experiences.length} position{experiences.length !== 1 ? 's' : ''}
+          </p>
         </motion.div>
 
         {/* Timeline */}
@@ -39,7 +50,7 @@ export default function Experience({ experiences }: { experiences: Experience[] 
           <div className="absolute left-4 sm:left-5 top-4 bottom-4 w-px bg-[#E5E5EA] hidden sm:block" />
 
           <div className="space-y-4 sm:space-y-5">
-            {experiences.map((exp, index) => {
+            {sorted.map((exp, index) => {
               const isOpen = expanded === exp.id;
               return (
                 <motion.div
@@ -52,7 +63,7 @@ export default function Experience({ experiences }: { experiences: Experience[] 
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-white"
                       style={{
-                        background: index === 0 ? '#AF52DE' : '#F2F2F7',
+                        background: index === 0 ? '#007AFF' : '#F2F2F7',
                         color: index === 0 ? 'white' : '#8E8E93',
                         boxShadow: '0 0 0 3px #F2F2F7',
                       }}
@@ -86,30 +97,43 @@ export default function Experience({ experiences }: { experiences: Experience[] 
                           {exp.start_date} — {exp.is_current ? 'Present' : exp.end_date}
                         </p>
                       </div>
-                      <div className="flex-shrink-0 text-[#C7C7CC] mt-0.5">
-                        {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                      </div>
+                      <motion.div
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+                        className="flex-shrink-0 text-[#C7C7CC] mt-0.5"
+                      >
+                        <ChevronDown className="w-5 h-5" />
+                      </motion.div>
                     </button>
 
-                    {isOpen && exp.description.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="px-5 sm:px-6 pb-5 sm:pb-6 border-t"
-                        style={{ borderColor: 'var(--border)' }}
-                      >
-                        <ul className="space-y-2.5 pt-4">
-                          {exp.description.map((item, i) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-[#636366] leading-relaxed">
-                              <span className="mt-2 w-1 h-1 rounded-full bg-[#AF52DE] flex-shrink-0" />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </motion.div>
-                    )}
+                    <AnimatePresence initial={false}>
+                      {isOpen && exp.description.length > 0 && (
+                        <motion.div
+                          key="content"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+                          className="overflow-hidden border-t"
+                          style={{ borderColor: 'var(--border)' }}
+                        >
+                          <ul className="space-y-2.5 pt-4 px-5 sm:px-6 pb-5 sm:pb-6">
+                            {exp.description.map((item, i) => (
+                              <motion.li
+                                key={i}
+                                initial={{ opacity: 0, x: -6 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.04 * i, duration: 0.2 }}
+                                className="flex items-start gap-3 text-sm text-[#636366] leading-relaxed"
+                              >
+                                <span className="mt-2 w-1 h-1 rounded-full bg-[#007AFF] flex-shrink-0" />
+                                {item}
+                              </motion.li>
+                            ))}
+                          </ul>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </motion.div>
               );

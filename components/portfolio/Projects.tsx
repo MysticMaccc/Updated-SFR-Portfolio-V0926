@@ -66,32 +66,44 @@ export default function Projects({ projects, projectImages = {} }: Props) {
             animate="show"
             className="mb-8 sm:mb-12"
           >
-            <p className="text-xs font-semibold text-[#34C759] uppercase tracking-widest mb-3">Projects</p>
+            <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Projects</p>
             <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Portfolio</h1>
+            <p className="text-sm text-[#8E8E93] mt-3">
+              {projects.length} project{projects.length !== 1 ? 's' : ''}
+            </p>
           </motion.div>
 
-          {/* Filter tabs */}
+          {/* Filter — iOS segmented control */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="show"
             transition={{ delay: 0.1 }}
-            className="flex gap-2 mb-8 sm:mb-10"
+            className="mb-8 sm:mb-10"
           >
-            {FILTERS.map(f => (
-              <button
-                key={f}
-                onClick={() => { setFilter(f); setShowAll(false); }}
-                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
-                style={{
-                  background: filter === f ? '#1C1C1E' : '#FFFFFF',
-                  color: filter === f ? '#FFFFFF' : '#636366',
-                  border: `1px solid ${filter === f ? '#1C1C1E' : 'var(--border)'}`,
-                }}
-              >
-                {f}
-              </button>
-            ))}
+            <div
+              className="inline-flex p-1 rounded-xl"
+              style={{ background: '#E9E9EB' }}
+            >
+              {FILTERS.map(f => (
+                <button
+                  key={f}
+                  onClick={() => { setFilter(f); setShowAll(false); }}
+                  className="relative px-5 py-1.5 rounded-[9px] text-sm font-medium"
+                  style={{ color: filter === f ? '#1C1C1E' : '#636366' }}
+                >
+                  {filter === f && (
+                    <motion.span
+                      layoutId="filter-segment"
+                      className="absolute inset-0 rounded-[9px] bg-white"
+                      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.12)' }}
+                      transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+                    />
+                  )}
+                  <span className="relative" style={{ fontWeight: filter === f ? 600 : 500 }}>{f}</span>
+                </button>
+              ))}
+            </div>
           </motion.div>
 
           {/* Grid */}
@@ -163,7 +175,7 @@ export default function Projects({ projects, projectImages = {} }: Props) {
                       </h3>
 
                       {/* Description */}
-                      <p className="text-xs sm:text-sm text-[#636366] leading-relaxed flex-1 mb-4">
+                      <p className="text-xs sm:text-sm text-[#636366] leading-relaxed flex-1 mb-4 line-clamp-3">
                         {project.description}
                       </p>
 

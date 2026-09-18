@@ -1,9 +1,29 @@
 'use client';
 
-import type { ElementType } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState, type ElementType } from 'react';
+import { motion, animate, useInView } from 'framer-motion';
 import { Github, Mail, Phone, Globe } from 'lucide-react';
 import type { Profile, Experience } from '@/types';
+
+function CountUp({ value }: { value: string }) {
+  const target = parseInt(value, 10) || 0;
+  const suffix = value.replace(String(target), '');
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-40px' });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(0, target, {
+      duration: 0.9,
+      ease: [0.25, 0.46, 0.45, 0.94],
+      onUpdate: v => setDisplay(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [inView, target]);
+
+  return <span ref={ref}>{display}{suffix}</span>;
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -52,10 +72,11 @@ export default function About({
           animate="show"
           className="mb-10 sm:mb-14"
         >
-          <p className="text-xs font-semibold text-[#007AFF] uppercase tracking-widest mb-3">About</p>
+          <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">About</p>
           <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight leading-tight">
             {profile?.name ?? 'Full Stack Developer'}
           </h1>
+          <p className="text-sm text-[#8E8E93] mt-3">{profile?.title ?? 'Full Stack Developer'}</p>
         </motion.div>
 
         {/* Content grid */}
@@ -122,7 +143,9 @@ export default function About({
                 variants={fadeUp}
                 className="card p-5 text-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
-                <p className="text-3xl sm:text-4xl font-bold text-[#1C1C1E] tracking-tight">{s.value}</p>
+                <p className="text-3xl sm:text-4xl font-bold text-[#1C1C1E] tracking-tight">
+                  <CountUp value={s.value} />
+                </p>
                 <p className="text-xs text-[#8E8E93] mt-1.5 font-medium">{s.label}</p>
               </motion.div>
             ))}

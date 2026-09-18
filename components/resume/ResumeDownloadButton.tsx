@@ -42,7 +42,7 @@ export default function ResumeDownloadButton({ data, variant = 'default' }: Prop
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${portfolioData.profile?.name ?? 'Denis_Hain'}_Resume.pdf`.replace(/\s+/g, '_');
+      a.download = `${portfolioData.profile?.name ?? 'Resume'}_Resume.pdf`.replace(/\s+/g, '_');
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -52,28 +52,15 @@ export default function ResumeDownloadButton({ data, variant = 'default' }: Prop
     }
   }
 
-  if (variant === 'hero') {
-    return (
-      <button
-        onClick={handleDownload}
-        disabled={loading}
-        className="ios-btn-secondary disabled:opacity-60"
-        style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.15)', color: 'white' }}
-      >
-        <Download className="w-4 h-4" />
-        {loading ? 'Generating…' : 'Download CV'}
-      </button>
-    );
-  }
+  const className =
+    variant === 'hero'
+      ? 'ios-btn-secondary w-full sm:w-auto justify-center disabled:opacity-60'
+      : 'ios-btn-secondary disabled:opacity-60';
 
   return (
-    <button
-      onClick={handleDownload}
-      disabled={loading}
-      className="ios-btn-primary disabled:opacity-60"
-    >
+    <button onClick={handleDownload} disabled={loading} className={className}>
       <Download className="w-4 h-4" />
-      {loading ? 'Generating PDF…' : 'Download PDF Resume'}
+      {loading ? 'Generating…' : 'Download CV'}
     </button>
   );
 }

@@ -32,8 +32,11 @@ export default function Trainings({ trainings }: { trainings: Training[] }) {
           animate="show"
           className="mb-10 sm:mb-14"
         >
-          <p className="text-xs font-semibold text-[#FF2D55] uppercase tracking-widest mb-3">Training</p>
+          <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Training</p>
           <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Certifications</h1>
+          <p className="text-sm text-[#8E8E93] mt-3">
+            {trainings.length} course{trainings.length !== 1 ? 's' : ''} from {Object.keys(grouped).length} provider{Object.keys(grouped).length !== 1 ? 's' : ''}
+          </p>
         </motion.div>
 
         {/* Groups */}
@@ -45,8 +48,8 @@ export default function Trainings({ trainings }: { trainings: Training[] }) {
                 className="px-5 sm:px-6 py-3.5 border-b flex items-center gap-2.5"
                 style={{ background: '#FAFAFA', borderColor: 'var(--border)' }}
               >
-                <div className="w-6 h-6 rounded-lg bg-[#FF2D55]/10 flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="w-3.5 h-3.5 text-[#FF2D55]" />
+                <div className="w-6 h-6 rounded-lg bg-[#007AFF]/10 flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="w-3.5 h-3.5 text-[#007AFF]" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#1C1C1E] uppercase tracking-wider">{provider}</p>

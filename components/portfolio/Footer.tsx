@@ -2,7 +2,7 @@ import type { Profile } from '@/types';
 
 export default function Footer({ profile }: { profile: Profile | null }) {
   return (
-    <footer className="py-8 px-5 bg-[#FAFAFA]">
+    <footer className="py-8 px-5 bg-[#FAFAFA] border-t" style={{ borderColor: 'var(--border)' }}>
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
         <p className="text-xs text-[#8E8E93]">
           © {new Date().getFullYear()} {profile?.name ?? 'Sherwin Christopher F. Roxas'}

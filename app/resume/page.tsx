@@ -53,7 +53,7 @@ export default function ResumePage() {
 
           {/* Page header */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0} className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#007AFF] uppercase tracking-widest mb-3">Resume</p>
+            <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Resume</p>
             <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Curriculum Vitae</h1>
           </motion.div>
 

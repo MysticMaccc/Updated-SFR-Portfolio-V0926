@@ -9,11 +9,6 @@ const LEVEL_COLOR: Record<string, { bg: string; text: string }> = {
   beginner:     { bg: 'rgba(255,149,0,0.1)',   text: '#7A4800' },
 };
 
-const CATEGORY_ACCENTS = [
-  '#007AFF', '#FF9500', '#AF52DE', '#34C759',
-  '#FF2D55', '#5AC8FA', '#FF6B35', '#FFCC00',
-];
-
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] } },
@@ -44,8 +39,11 @@ export default function Skills({ skills }: { skills: Skill[] }) {
           animate="show"
           className="mb-10 sm:mb-14"
         >
-          <p className="text-xs font-semibold text-[#FF9500] uppercase tracking-widest mb-3">Skills</p>
+          <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Skills</p>
           <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Technical Skills</h1>
+          <p className="text-sm text-[#8E8E93] mt-3">
+            {skills.length} skills across {categories.length} categories
+          </p>
         </motion.div>
 
         {/* Category grid */}
@@ -55,32 +53,32 @@ export default function Skills({ skills }: { skills: Skill[] }) {
           animate="show"
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-          {categories.map(([category, items], index) => {
-            const accent = CATEGORY_ACCENTS[index % CATEGORY_ACCENTS.length];
+          {categories.map(([category, items]) => {
             return (
               <motion.div
                 key={category}
                 variants={fadeUp}
                 className="card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-                style={{ borderLeft: `3px solid ${accent}` }}
               >
-                <p
-                  className="text-xs font-bold uppercase tracking-wider mb-3"
-                  style={{ color: accent }}
-                >
-                  {category}
-                </p>
+                <div className="flex items-baseline justify-between mb-3">
+                  <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider">
+                    {category}
+                  </p>
+                  <span className="text-[10px] text-[#C7C7CC] font-medium tabular-nums">{items.length}</span>
+                </div>
                 <div className="flex flex-wrap gap-1.5">
                   {items.map(skill => {
                     const style = LEVEL_COLOR[skill.level] ?? LEVEL_COLOR.intermediate;
                     return (
-                      <span
+                      <motion.span
                         key={skill.id}
-                        className="skill-pill"
+                        whileHover={{ scale: 1.08, y: -1 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 22 }}
+                        className="skill-pill cursor-default"
                         style={{ background: style.bg, color: style.text }}
                       >
                         {skill.name}
-                      </span>
+                      </motion.span>
                     );
                   })}
                 </div>

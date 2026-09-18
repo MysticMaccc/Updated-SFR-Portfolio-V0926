@@ -46,7 +46,7 @@ export default function Contact({ profile }: { profile: Profile | null }) {
           animate="show"
           className="mb-10 sm:mb-14"
         >
-          <p className="text-xs font-semibold text-[#5AC8FA] uppercase tracking-widest mb-3">Contact</p>
+          <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Contact</p>
           <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Get in Touch</h1>
         </motion.div>
 
