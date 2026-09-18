@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { defaultPortfolioData } from '@/lib/defaultData';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, X, Save, BookOpen, Info } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, BookOpen, Info, Search } from 'lucide-react';
 import type { Training } from '@/types';
 
 const empty: Omit<Training, 'id' | 'created_at'> = {
@@ -19,6 +19,8 @@ export default function TrainingsPage() {
   const [editing, setEditing] = useState<Training | null>(null);
   const [form, setForm] = useState(empty);
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState('');
+  const [providerFilter, setProviderFilter] = useState('all');
 
   async function load() {
     const { data } = await supabase.from('trainings').select('*').order('order_index');
@@ -60,7 +62,25 @@ export default function TrainingsPage() {
     else { toast.success('Course removed.'); load(); }
   }
 
+  // All providers — used by the modal datalist, filter dropdown, and header count
   const grouped = items.reduce<Record<string, Training[]>>((acc, t) => {
+    if (!acc[t.provider]) acc[t.provider] = [];
+    acc[t.provider].push(t);
+    return acc;
+  }, {});
+
+  const q = search.trim().toLowerCase();
+  const filteredItems = items.filter(t => {
+    const matchesProvider = providerFilter === 'all' || t.provider === providerFilter;
+    const matchesQ =
+      !q ||
+      t.title.toLowerCase().includes(q) ||
+      t.provider.toLowerCase().includes(q) ||
+      (t.year ?? '').includes(q);
+    return matchesProvider && matchesQ;
+  });
+
+  const filteredGrouped = filteredItems.reduce<Record<string, Training[]>>((acc, t) => {
     if (!acc[t.provider]) acc[t.provider] = [];
     acc[t.provider].push(t);
     return acc;
@@ -94,6 +114,32 @@ export default function TrainingsPage() {
           Courses are grouped by provider on your portfolio. Keep the provider name consistent — e.g. always "Udemy" not "udemy" or "Udemy.com" — so they group correctly.
         </p>
       </div>
+
+      {/* Search & filter */}
+      {items.length > 0 && (
+        <div className="flex flex-col sm:flex-row gap-2.5 mb-4">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-[#8E8E93] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              className="ios-input"
+              style={{ paddingLeft: 38 }}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by course, provider, or year…"
+            />
+          </div>
+          <select
+            className="ios-input sm:w-56"
+            value={providerFilter}
+            onChange={e => setProviderFilter(e.target.value)}
+          >
+            <option value="all">All providers</option>
+            {Object.keys(grouped).map(p => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Modal */}
       {showForm && (
@@ -191,9 +237,20 @@ export default function TrainingsPage() {
             <Plus className="w-4 h-4" /> Add First Course
           </button>
         </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="card p-10 text-center">
+          <p className="font-semibold text-[#1C1C1E] mb-1">No matching courses</p>
+          <p className="text-sm text-[#8E8E93] mb-4">Try a different search or provider.</p>
+          <button
+            onClick={() => { setSearch(''); setProviderFilter('all'); }}
+            className="ios-btn-secondary mx-auto text-sm"
+          >
+            Clear filters
+          </button>
+        </div>
       ) : (
         <div className="space-y-4">
-          {Object.entries(grouped).map(([provider, courses]) => (
+          {Object.entries(filteredGrouped).map(([provider, courses]) => (
             <div key={provider} className="card overflow-hidden">
               <div className="px-4 py-3 border-b" style={{ background: '#FAFAFA', borderColor: 'var(--border)' }}>
                 <p className="text-xs font-semibold text-[#636366] uppercase tracking-wider">{provider}</p>

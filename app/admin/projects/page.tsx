@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { defaultPortfolioData } from '@/lib/defaultData';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, X, Save, FolderOpen, Star, Info, Images } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, FolderOpen, Star, Info, Images, Search } from 'lucide-react';
 import type { Project } from '@/types';
 import ProjectImages from '@/components/admin/ProjectImages';
 
@@ -23,6 +23,8 @@ export default function ProjectsPage() {
   const [form, setForm] = useState(empty);
   const [techInput, setTechInput] = useState('');
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState('');
+  const [catFilter, setCatFilter] = useState('all');
 
   async function load() {
     const { data } = await supabase.from('projects').select('*').order('order_index');
@@ -84,6 +86,17 @@ export default function ProjectsPage() {
     other:  { bg: 'rgba(142,142,147,0.1)', text: '#636366' },
   };
 
+  const q = search.trim().toLowerCase();
+  const filtered = projects.filter(p => {
+    const matchesCat = catFilter === 'all' || p.category === catFilter;
+    const matchesQ =
+      !q ||
+      p.title.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q) ||
+      p.tech_stack.some(t => t.toLowerCase().includes(q));
+    return matchesCat && matchesQ;
+  });
+
   if (loading) return <div className="flex items-center justify-center h-48"><p className="text-sm text-[#8E8E93]">Loading projects…</p></div>;
 
   return (
@@ -112,6 +125,37 @@ export default function ProjectsPage() {
           Projects are shown on your public portfolio. Mark your best ones as <strong>Featured</strong> — they appear highlighted at the top. The order number controls the display order (lower = first).
         </p>
       </div>
+
+      {/* Search & filter */}
+      {projects.length > 0 && (
+        <div className="flex flex-col sm:flex-row gap-2.5 mb-4">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-[#8E8E93] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              className="ios-input"
+              style={{ paddingLeft: 38 }}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by name, description, or tech…"
+            />
+          </div>
+          <div className="flex gap-1.5">
+            {['all', ...CATEGORIES].map(c => (
+              <button
+                key={c}
+                onClick={() => setCatFilter(c)}
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors capitalize"
+                style={{
+                  background: catFilter === c ? '#1C1C1E' : '#F2F2F7',
+                  color: catFilter === c ? '#FFFFFF' : '#636366',
+                }}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
       {showForm && (
@@ -250,9 +294,20 @@ export default function ProjectsPage() {
             <Plus className="w-4 h-4" /> Add Your First Project
           </button>
         </div>
+      ) : filtered.length === 0 ? (
+        <div className="card p-10 text-center">
+          <p className="font-semibold text-[#1C1C1E] mb-1">No matching projects</p>
+          <p className="text-sm text-[#8E8E93] mb-4">Try a different search or filter.</p>
+          <button
+            onClick={() => { setSearch(''); setCatFilter('all'); }}
+            className="ios-btn-secondary mx-auto text-sm"
+          >
+            Clear filters
+          </button>
+        </div>
       ) : (
         <div className="space-y-2">
-          {projects.map(p => {
+          {filtered.map(p => {
             const badge = CATEGORY_COLOR[p.category] ?? CATEGORY_COLOR.other;
             return (
               <div key={p.id} className="card p-4 flex items-center gap-4">
