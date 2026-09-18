@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { defaultPortfolioData } from '@/lib/defaultData';
 import toast from 'react-hot-toast';
-import { Plus, Trash2, X, Zap, Info } from 'lucide-react';
+import { Plus, Trash2, X, Zap, Info, Search } from 'lucide-react';
 import type { Skill } from '@/types';
 
 const LEVELS = [
@@ -30,6 +30,8 @@ export default function SkillsPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(empty);
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState('');
+  const [levelFilter, setLevelFilter] = useState('all');
 
   async function load() {
     const { data } = await supabase.from('skills').select('*').order('category').order('order_index');
@@ -38,7 +40,22 @@ export default function SkillsPage() {
   }
   useEffect(() => { load(); }, []);
 
+  // All categories — used by the modal datalist and header count
   const grouped = skills.reduce<Record<string, Skill[]>>((acc, s) => {
+    if (!acc[s.category]) acc[s.category] = [];
+    acc[s.category].push(s);
+    return acc;
+  }, {});
+
+  const q = search.trim().toLowerCase();
+  const filteredSkills = skills.filter(s => {
+    const matchesLevel = levelFilter === 'all' || s.level === levelFilter;
+    const matchesQ =
+      !q || s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q);
+    return matchesLevel && matchesQ;
+  });
+
+  const filteredGrouped = filteredSkills.reduce<Record<string, Skill[]>>((acc, s) => {
     if (!acc[s.category]) acc[s.category] = [];
     acc[s.category].push(s);
     return acc;
@@ -92,6 +109,48 @@ export default function SkillsPage() {
           Skills are grouped by category on your portfolio. Use consistent category names (e.g. "Frontend", "Backend") so they group correctly. The color of each pill indicates proficiency level.
         </p>
       </div>
+
+      {/* Search & filter */}
+      {skills.length > 0 && (
+        <div className="flex flex-col sm:flex-row gap-2.5 mb-4">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-[#8E8E93] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              className="ios-input"
+              style={{ paddingLeft: 38 }}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by skill or category…"
+            />
+          </div>
+          <div className="flex gap-1.5">
+            <button
+              onClick={() => setLevelFilter('all')}
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors"
+              style={{
+                background: levelFilter === 'all' ? '#1C1C1E' : '#F2F2F7',
+                color: levelFilter === 'all' ? '#FFFFFF' : '#636366',
+              }}
+            >
+              All
+            </button>
+            {LEVELS.map(l => (
+              <button
+                key={l.value}
+                onClick={() => setLevelFilter(l.value)}
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors"
+                style={{
+                  background: levelFilter === l.value ? l.color + '18' : '#F2F2F7',
+                  color: levelFilter === l.value ? l.color : '#636366',
+                  border: `1px solid ${levelFilter === l.value ? l.color + '40' : 'transparent'}`,
+                }}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Add skill modal */}
       {showForm && (
@@ -182,9 +241,20 @@ export default function SkillsPage() {
             <Plus className="w-4 h-4" /> Add First Skill
           </button>
         </div>
+      ) : filteredSkills.length === 0 ? (
+        <div className="card p-10 text-center">
+          <p className="font-semibold text-[#1C1C1E] mb-1">No matching skills</p>
+          <p className="text-sm text-[#8E8E93] mb-4">Try a different search or level filter.</p>
+          <button
+            onClick={() => { setSearch(''); setLevelFilter('all'); }}
+            className="ios-btn-secondary mx-auto text-sm"
+          >
+            Clear filters
+          </button>
+        </div>
       ) : (
         <div className="space-y-4">
-          {Object.entries(grouped).map(([category, items]) => (
+          {Object.entries(filteredGrouped).map(([category, items]) => (
             <div key={category} className="card p-4">
               <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-3">
                 {category}

@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
 
 function SectionHeading({ children }: { children: string }) {
   return (
-    <View>
+    // minPresenceAhead keeps the heading from being orphaned at a page bottom
+    <View minPresenceAhead={50}>
       <Text style={styles.sectionTitle}>{children}</Text>
       <View style={styles.sectionRule} />
     </View>
@@ -210,14 +211,18 @@ export default function ResumePDF({ data }: { data: PortfolioData }) {
         <View style={styles.section}>
           <SectionHeading>Professional Experience</SectionHeading>
           {sortedExperiences.map(exp => (
-            <View key={exp.id} style={styles.expBlock} wrap={false}>
-              <View style={styles.expHeader}>
-                <Text style={styles.expRole}>{exp.role}</Text>
-                <Text style={styles.expDate}>
-                  {exp.start_date} – {exp.is_current ? 'Present' : exp.end_date}
-                </Text>
+            // Blocks may wrap across pages (avoids large gaps); the role/company
+            // header stays attached to the first bullets via minPresenceAhead.
+            <View key={exp.id} style={styles.expBlock}>
+              <View minPresenceAhead={44}>
+                <View style={styles.expHeader}>
+                  <Text style={styles.expRole}>{exp.role}</Text>
+                  <Text style={styles.expDate}>
+                    {exp.start_date} – {exp.is_current ? 'Present' : exp.end_date}
+                  </Text>
+                </View>
+                <Text style={styles.expCompany}>{exp.company}</Text>
               </View>
-              <Text style={styles.expCompany}>{exp.company}</Text>
               {exp.description.map((d, i) => (
                 <View key={i} style={styles.bullet}>
                   <Text style={styles.bulletDash}>–</Text>
