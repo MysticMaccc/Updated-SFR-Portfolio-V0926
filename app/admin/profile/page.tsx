@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { defaultPortfolioData } from '@/lib/defaultData';
 import toast from 'react-hot-toast';
-import { Save, User, Info } from 'lucide-react';
+import { Save, User, Info, Upload, Trash2, Loader2 } from 'lucide-react';
 import type { Profile } from '@/types';
 
 type FormData = Omit<Profile, 'id' | 'user_id' | 'created_at' | 'updated_at'>;
@@ -70,23 +70,64 @@ const FIELDS: {
     type: 'url',
     placeholder: 'https://yoursite.vercel.app',
   },
-  {
-    key: 'avatar_url',
-    label: 'Profile Photo URL',
-    hint: 'Optional — paste a direct link to a photo (JPG, PNG). Leave blank to use initials.',
-    type: 'url',
-    placeholder: 'https://…/your-photo.jpg',
-  },
 ];
 
 export default function ProfilePage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<FormData>({
     name: '', title: '', bio: '', phone: '', email: '',
     github: '', linkedin: '', portfolio_url: '', avatar_url: '',
   });
+
+  // Photos live in the existing public "project-images" bucket under avatars/
+  // so no extra Supabase setup is needed.
+  async function handlePhotoUpload(file: File) {
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please choose an image file (JPG, PNG, WebP).');
+      return;
+    }
+    setUploading(true);
+    const ext = file.name.split('.').pop() ?? 'jpg';
+    const path = `avatars/${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('project-images')
+      .upload(path, file, { contentType: file.type });
+
+    if (uploadError) {
+      toast.error('Upload failed. Please try again.');
+      setUploading(false);
+      return;
+    }
+
+    // Remove the previous photo if it was one of our uploads
+    const oldPath = form.avatar_url?.split('/project-images/')[1];
+    if (oldPath?.startsWith('avatars/')) {
+      await supabase.storage.from('project-images').remove([oldPath]);
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('project-images')
+      .getPublicUrl(path);
+
+    setForm(f => ({ ...f, avatar_url: publicUrl }));
+    setUploading(false);
+    toast.success('Photo uploaded! Click Save Profile to apply it.');
+    if (fileRef.current) fileRef.current.value = '';
+  }
+
+  async function handlePhotoRemove() {
+    const oldPath = form.avatar_url?.split('/project-images/')[1];
+    if (oldPath?.startsWith('avatars/')) {
+      await supabase.storage.from('project-images').remove([oldPath]);
+    }
+    setForm(f => ({ ...f, avatar_url: '' }));
+    toast.success('Photo removed. Click Save Profile to apply.');
+  }
 
   useEffect(() => {
     async function load() {
@@ -165,6 +206,65 @@ export default function ProfilePage() {
 
       {/* Form */}
       <form onSubmit={handleSave} className="card p-6 space-y-5">
+        {/* Profile photo */}
+        <div>
+          <label className="block text-sm font-semibold text-[#1C1C1E] mb-1">Profile Photo</label>
+          <p className="text-xs text-[#8E8E93] mb-3">
+            Shown on your portfolio landing page and PDF resume. If no photo is set, your initials are used instead.
+          </p>
+          <div className="flex items-center gap-4">
+            {form.avatar_url ? (
+              <img
+                src={form.avatar_url}
+                alt="Profile"
+                className="w-20 h-20 rounded-[24px] object-cover flex-shrink-0"
+                style={{ border: '1px solid var(--border)' }}
+              />
+            ) : (
+              <div
+                className="w-20 h-20 rounded-[24px] flex items-center justify-center text-white text-2xl font-bold flex-shrink-0"
+                style={{ background: 'linear-gradient(180deg, #3395FF 0%, #007AFF 100%)' }}
+              >
+                {(form.name || 'SR').split(' ').map(n => n[0]).slice(0, 2).join('')}
+              </div>
+            )}
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="ios-btn-secondary text-xs disabled:opacity-50"
+              >
+                {uploading
+                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  : <Upload className="w-3.5 h-3.5" />}
+                {uploading ? 'Uploading…' : (form.avatar_url ? 'Change Photo' : 'Upload Photo')}
+              </button>
+              {form.avatar_url && (
+                <button
+                  type="button"
+                  onClick={handlePhotoRemove}
+                  className="flex items-center gap-1.5 text-xs text-[#FF3B30] hover:opacity-70 transition-opacity"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Remove photo
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={e => {
+                const f = e.target.files?.[0];
+                if (f) handlePhotoUpload(f);
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="border-t" style={{ borderColor: 'var(--border)' }} />
+
         {FIELDS.map(({ key, label, hint, type, multiline, placeholder }) => (
           <div key={key}>
             <label className="block text-sm font-semibold text-[#1C1C1E] mb-1">

@@ -63,6 +63,7 @@ export default function Contact({ profile }: { profile: Profile | null }) {
               <motion.a
                 key={label}
                 variants={fadeUp}
+                whileTap={{ scale: 0.98 }}
                 href={href}
                 target={external ? '_blank' : undefined}
                 rel="noopener noreferrer"

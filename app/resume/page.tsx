@@ -60,12 +60,21 @@ export default function ResumePage() {
           {/* Profile card */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.1} className="card p-6 sm:p-7 mb-6">
             <div className="flex items-start gap-4">
-              <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
-                style={{ background: 'var(--ios-blue)' }}
-              >
-                {(displayProfile?.name ?? 'SR').split(' ').map(n => n[0]).slice(0, 2).join('')}
-              </div>
+              {displayProfile?.avatar_url ? (
+                <img
+                  src={displayProfile.avatar_url}
+                  alt={displayProfile?.name ?? 'Profile'}
+                  className="w-12 h-12 rounded-2xl object-cover flex-shrink-0"
+                  style={{ border: '1px solid var(--border)' }}
+                />
+              ) : (
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+                  style={{ background: 'var(--ios-blue)' }}
+                >
+                  {(displayProfile?.name ?? 'SR').split(' ').map(n => n[0]).slice(0, 2).join('')}
+                </div>
+              )}
               <div>
                 <p className="text-lg font-bold text-[#1C1C1E] leading-tight">{displayProfile?.name}</p>
                 <p className="text-[#007AFF] font-medium text-sm mt-0.5">{displayProfile?.title}</p>

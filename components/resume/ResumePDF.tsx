@@ -1,5 +1,5 @@
 import {
-  Document, Page, Text, View, StyleSheet, Link,
+  Document, Page, Text, View, StyleSheet, Link, Image,
 } from '@react-pdf/renderer';
 import type { PortfolioData, Experience } from '@/types';
 
@@ -174,17 +174,32 @@ export default function ResumePDF({ data }: { data: PortfolioData }) {
       <Page size="A4" style={styles.page}>
 
         {/* Header */}
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.jobTitle}>{profile?.title ?? 'Full Stack Developer'}</Text>
-        <View style={styles.contactRow}>
-          {contactParts.map((c, i) => (
-            <View key={c.text} style={{ flexDirection: 'row' }}>
-              {i > 0 && <Text style={styles.contactSep}>·</Text>}
-              {c.href
-                ? <Link src={c.href} style={styles.contactLink}>{c.text}</Link>
-                : <Text style={styles.contactText}>{c.text}</Text>}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ flex: 1, paddingRight: 14 }}>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.jobTitle}>{profile?.title ?? 'Full Stack Developer'}</Text>
+            <View style={styles.contactRow}>
+              {contactParts.map((c, i) => (
+                <View key={c.text} style={{ flexDirection: 'row' }}>
+                  {i > 0 && <Text style={styles.contactSep}>·</Text>}
+                  {c.href
+                    ? <Link src={c.href} style={styles.contactLink}>{c.text}</Link>
+                    : <Text style={styles.contactText}>{c.text}</Text>}
+                </View>
+              ))}
             </View>
-          ))}
+          </View>
+          {profile?.avatar_url ? (
+            <Image
+              src={profile.avatar_url}
+              style={{
+                width: 58,
+                height: 58,
+                borderRadius: 12,
+                objectFit: 'cover',
+              }}
+            />
+          ) : null}
         </View>
         <View style={styles.headerRule} />
 

@@ -40,9 +40,16 @@ export default function Trainings({ trainings }: { trainings: Training[] }) {
         </motion.div>
 
         {/* Groups */}
-        <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
+        <div className="space-y-5">
           {Object.entries(grouped).map(([provider, courses]) => (
-            <motion.div key={provider} variants={fadeUp} className="card overflow-hidden">
+            <motion.div
+              key={provider}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+              className="card overflow-hidden"
+            >
               {/* Provider header */}
               <div
                 className="px-5 sm:px-6 py-3.5 border-b flex items-center gap-2.5"
@@ -75,7 +82,7 @@ export default function Trainings({ trainings }: { trainings: Training[] }) {
                       className={[
                         'flex items-center justify-between px-5 sm:px-6 py-4 gap-3',
                         hasUrl
-                          ? 'hover:bg-[#F2F2F7] transition-colors cursor-pointer group'
+                          ? 'hover:bg-[#F2F2F7] transition-all cursor-pointer group active:scale-[0.99]'
                           : '',
                       ].join(' ')}
                     >
@@ -109,7 +116,7 @@ export default function Trainings({ trainings }: { trainings: Training[] }) {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
