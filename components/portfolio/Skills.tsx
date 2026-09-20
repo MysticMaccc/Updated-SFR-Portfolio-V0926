@@ -47,17 +47,15 @@ export default function Skills({ skills }: { skills: Skill[] }) {
         </motion.div>
 
         {/* Category grid */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
-        >
-          {categories.map(([category, items]) => {
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {categories.map(([category, items], i) => {
             return (
               <motion.div
                 key={category}
-                variants={fadeUp}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ type: 'spring', stiffness: 320, damping: 28, delay: (i % 3) * 0.06 }}
                 className="card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
                 <div className="flex items-baseline justify-between mb-3">
@@ -85,15 +83,15 @@ export default function Skills({ skills }: { skills: Skill[] }) {
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
 
         {/* Legend */}
         {skills.length > 0 && (
           <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            transition={{ delay: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
             className="flex flex-wrap items-center gap-4 sm:gap-6 mt-10 pt-6 border-t"
             style={{ borderColor: 'var(--border)' }}
           >

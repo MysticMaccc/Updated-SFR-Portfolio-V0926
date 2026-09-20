@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { Menu, X, FileText } from 'lucide-react';
 import type { Profile } from '@/types';
 
@@ -18,7 +18,18 @@ const NAV_LINKS = [
 
 export default function Navigation({ profile }: { profile: Profile | null }) {
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { scrollY } = useScroll();
+
+  // iOS Safari behavior: nav tucks away scrolling down, returns scrolling up
+  useMotionValueEvent(scrollY, 'change', latest => {
+    const previous = scrollY.getPrevious() ?? 0;
+    setScrolled(latest > 8);
+    if (open) { setHidden(false); return; }
+    setHidden(latest > previous && latest > 140);
+  });
 
   const initials = (profile?.name ?? 'SR')
     .split(' ')
@@ -30,7 +41,12 @@ export default function Navigation({ profile }: { profile: Profile | null }) {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 ios-nav">
+      <motion.nav
+        animate={{ y: hidden ? -56 : 0 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 36 }}
+        className="fixed top-0 left-0 right-0 z-40 ios-nav"
+        style={{ boxShadow: scrolled ? '0 1px 12px rgba(0,0,0,0.06)' : 'none' }}
+      >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
             <motion.div
@@ -96,7 +112,7 @@ export default function Navigation({ profile }: { profile: Profile | null }) {
             </motion.button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile drawer */}
       <AnimatePresence>

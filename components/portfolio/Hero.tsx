@@ -33,8 +33,9 @@ export default function Hero({ profile }: { profile: Profile | null }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.7 }}
           animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.06, rotate: -2 }}
           transition={{ ...spring, delay: 0 }}
-          className="flex justify-center mb-7 sm:mb-9"
+          className="flex justify-center mb-7 sm:mb-9 cursor-default"
         >
           {profile?.avatar_url ? (
             <img
