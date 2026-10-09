@@ -22,12 +22,13 @@ export default function ResumeDownloadButton({ data, variant = 'default' }: Prop
     try {
       let portfolioData = data;
       if (!portfolioData) {
-        const [profile, projects, skills, experiences, trainings] = await Promise.all([
+        const [profile, projects, skills, experiences, trainings, educations] = await Promise.all([
           supabase.from('profiles').select('*').single(),
           supabase.from('projects').select('*').order('order_index'),
           supabase.from('skills').select('*').order('order_index'),
           supabase.from('experiences').select('*').order('order_index'),
           supabase.from('trainings').select('*').order('order_index'),
+          supabase.from('educations').select('*').order('order_index'),
         ]);
         portfolioData = {
           profile: profile.data ?? defaultPortfolioData.profile,
@@ -35,6 +36,7 @@ export default function ResumeDownloadButton({ data, variant = 'default' }: Prop
           skills: skills.data?.length ? skills.data : defaultPortfolioData.skills,
           experiences: experiences.data?.length ? experiences.data : defaultPortfolioData.experiences,
           trainings: trainings.data?.length ? trainings.data : defaultPortfolioData.trainings,
+          educations: educations.data?.length ? educations.data : defaultPortfolioData.educations,
         };
       }
 

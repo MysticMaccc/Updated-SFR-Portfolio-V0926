@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { defaultPortfolioData } from '@/lib/defaultData';
-import type { Profile, Project, Skill, Experience, Training, ProjectImage } from '@/types';
+import type { Profile, Project, Skill, Experience, Training, ProjectImage, Education } from '@/types';
 
 export async function fetchProfile(): Promise<Profile> {
   try {
@@ -49,6 +49,16 @@ export async function fetchTrainings(): Promise<Training[]> {
     return data?.length ? data : defaultPortfolioData.trainings;
   } catch {
     return defaultPortfolioData.trainings;
+  }
+}
+
+export async function fetchEducations(): Promise<Education[]> {
+  try {
+    const supabase = createClient();
+    const { data } = await supabase.from('educations').select('*').order('order_index');
+    return data?.length ? data : defaultPortfolioData.educations;
+  } catch {
+    return defaultPortfolioData.educations;
   }
 }
 
