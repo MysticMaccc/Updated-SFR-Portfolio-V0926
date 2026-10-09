@@ -1,6 +1,19 @@
 import type { PortfolioData } from '@/types';
 
 export const defaultPortfolioData: PortfolioData = {
+  educations: [
+    {
+      id: 'e1',
+      institution: 'AMA Computer College',
+      degree: 'Bachelor of Science',
+      field_of_study: 'Information Technology',
+      start_year: '2014',
+      end_year: '2018',
+      is_current: false,
+      order_index: 0,
+      created_at: new Date().toISOString(),
+    },
+  ],
   profile: {
     id: 'default',
     user_id: 'default',

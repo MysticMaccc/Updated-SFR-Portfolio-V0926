@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { useState } from 'react';
 import {
   LayoutDashboard, User, FolderOpen, Zap, Briefcase,
-  BookOpen, FileText, LogOut, Menu, X, ExternalLink,
+  GraduationCap, BookOpen, FileText, LogOut, Menu, X, ExternalLink,
 } from 'lucide-react';
 
 const NAV = [
@@ -16,6 +16,7 @@ const NAV = [
   { label: 'Projects',   href: '/admin/projects',   icon: FolderOpen,       desc: 'Portfolio work' },
   { label: 'Skills',     href: '/admin/skills',     icon: Zap,              desc: 'Technologies' },
   { label: 'Experience', href: '/admin/experience', icon: Briefcase,        desc: 'Work history' },
+  { label: 'Education',  href: '/admin/education',  icon: GraduationCap,    desc: 'Qualifications' },
   { label: 'Training',   href: '/admin/trainings',  icon: BookOpen,         desc: 'Certifications' },
   { label: 'Resume',     href: '/admin/resume',     icon: FileText,         desc: 'PDF generator' },
 ];
