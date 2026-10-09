@@ -29,34 +29,7 @@ export default function Hero({ profile }: { profile: Profile | null }) {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-white pt-14">
       <div className="max-w-3xl w-full mx-auto px-5 sm:px-8 py-16 sm:py-24 text-center">
-        {/* Avatar */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.06, rotate: -2 }}
-          transition={{ ...spring, delay: 0 }}
-          className="flex justify-center mb-7 sm:mb-9 cursor-default"
-        >
-          {profile?.avatar_url ? (
-            <img
-              src={profile.avatar_url}
-              alt={name}
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-[28px] object-cover"
-              style={{ border: '1px solid var(--border)', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-            />
-          ) : (
-            <div
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-[28px] flex items-center justify-center text-white text-2xl sm:text-3xl font-bold"
-              style={{
-                background: 'linear-gradient(180deg, #3395FF 0%, #007AFF 100%)',
-                boxShadow: '0 4px 16px rgba(0,122,255,0.25)',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              {name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-            </div>
-          )}
-        </motion.div>
+
 
         {/* Name */}
         <motion.h1
