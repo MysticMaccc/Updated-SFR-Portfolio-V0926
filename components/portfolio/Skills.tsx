@@ -3,17 +3,6 @@
 import { motion } from 'framer-motion';
 import type { Skill } from '@/types';
 
-const LEVEL_COLOR: Record<string, { bg: string; text: string; border: string }> = {
-  advanced:     { bg: 'rgba(74,222,128,0.08)',  text: '#4ADE80', border: 'rgba(74,222,128,0.2)' },
-  intermediate: { bg: 'rgba(200,168,106,0.1)',  text: '#C8A86A', border: 'rgba(200,168,106,0.25)' },
-  beginner:     { bg: 'rgba(251,146,60,0.08)',  text: '#FB923C', border: 'rgba(251,146,60,0.2)' },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] } },
-};
-
 export default function Skills({ skills }: { skills: Skill[] }) {
   const grouped = skills.reduce<Record<string, Skill[]>>((acc, s) => {
     if (!acc[s.category]) acc[s.category] = [];
@@ -24,73 +13,78 @@ export default function Skills({ skills }: { skills: Skill[] }) {
   const categories = Object.entries(grouped);
 
   return (
-    <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6" style={{ background: 'var(--bg)' }}>
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-[calc(100vh-48px)] py-14 sm:py-20 px-5 sm:px-10 relative z-10" style={{ background: 'var(--bg)' }}>
+      <div className="max-w-[1400px] mx-auto">
 
-        <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-10 sm:mb-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>Skills</p>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>Technical Skills</h1>
-          <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>
-            {skills.length} skills across {categories.length} categories
-          </p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map(([category, items], i) => (
-            <motion.div
-              key={category}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ type: 'spring', stiffness: 320, damping: 28, delay: (i % 3) * 0.06 }}
-              className="card p-5 transition-all duration-200 hover:-translate-y-0.5"
-              style={{ cursor: 'default' }}
-            >
-              <div className="flex items-baseline justify-between mb-3.5">
-                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                  {category}
-                </p>
-                <span className="text-[10px] font-medium tabular-nums" style={{ color: 'var(--text-faint)' }}>{items.length}</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {items.map(skill => {
-                  const style = LEVEL_COLOR[skill.level] ?? LEVEL_COLOR.intermediate;
-                  return (
-                    <motion.span
-                      key={skill.id}
-                      whileHover={{ scale: 1.06, y: -1 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 22 }}
-                      className="skill-pill cursor-default"
-                      style={{ background: style.bg, color: style.text, border: `1px solid ${style.border}` }}
-                    >
-                      {skill.name}
-                    </motion.span>
-                  );
-                })}
-              </div>
-            </motion.div>
-          ))}
+        {/* Section marker */}
+        <div className="flex items-center justify-between mb-12 pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
+          <span className="section-meta" style={{ color: 'var(--text-faint)' }}>[ 03 ] — Skills</span>
+          <span className="section-meta" style={{ color: 'var(--text-faint)' }}>Chapter Two</span>
         </div>
 
-        {/* Legend */}
-        {skills.length > 0 && (
+        <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+
+          {/* Left: heading */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-wrap items-center gap-4 sm:gap-6 mt-10 pt-6"
-            style={{ borderTop: '1px solid var(--border)' }}
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.5 }}
           >
-            <p className="text-xs font-medium" style={{ color: 'var(--text-faint)' }}>Proficiency:</p>
-            {Object.entries(LEVEL_COLOR).map(([level, s]) => (
-              <span key={level} className="flex items-center gap-1.5 text-xs" style={{ color: s.text }}>
-                <span className="w-2 h-2 rounded-sm" style={{ background: s.bg, border: `1px solid ${s.border}` }} />
-                {level.charAt(0).toUpperCase() + level.slice(1)}
-              </span>
-            ))}
+            <span className="heading-bold text-[clamp(3rem,8vw,7rem)]">TOOLS</span>
+            <span className="heading-outline-orange text-[clamp(3rem,8vw,7rem)]">OF THE</span>
+            <span className="heading-bold text-[clamp(3rem,8vw,7rem)]">TRADE</span>
+            <p className="text-base mt-6 max-w-sm leading-relaxed" style={{ color: 'var(--text-muted)', lineHeight: '1.75' }}>
+              A curated set of languages, frameworks, and tools I reach for to make things that feel considered and fast.
+            </p>
+            <p className="text-sm mt-3 font-medium" style={{ color: 'var(--text-faint)' }}>
+              {skills.length} skills across {categories.length} categories
+            </p>
           </motion.div>
-        )}
+
+          {/* Right: category grids */}
+          <div className="space-y-8">
+            {categories.map(([category, items], i) => (
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.4, delay: i * 0.06 }}
+              >
+                {/* Category header */}
+                <div className="flex items-center justify-between py-2.5" style={{ borderBottom: '1px solid var(--border)' }}>
+                  <div className="flex items-center gap-3">
+                    <span className="section-meta" style={{ color: 'var(--accent-2)' }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                      {category}
+                    </span>
+                  </div>
+                  <span className="text-xs font-medium" style={{ color: 'var(--text-faint)' }}>{items.length}</span>
+                </div>
+
+                {/* Skill grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-px" style={{ background: 'var(--border)' }}>
+                  {items.map(skill => (
+                    <motion.div
+                      key={skill.id}
+                      whileHover={{ background: 'var(--surface-2)' }}
+                      className="flex items-center px-4 py-3.5"
+                      style={{ background: 'var(--surface)' }}
+                    >
+                      <span className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{skill.name}</span>
+                    </motion.div>
+                  ))}
+                  {items.length % 3 !== 0 && Array.from({ length: 3 - (items.length % 3) }).map((_, i) => (
+                    <div key={`empty-${i}`} style={{ background: 'var(--surface)' }} />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
