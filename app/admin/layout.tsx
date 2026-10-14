@@ -15,7 +15,7 @@ export default async function AdminLayout({
   if (!user) redirect('/auth/login');
 
   return (
-    <div className="min-h-screen bg-[#F2F2F7] flex">
+    <div className="min-h-screen flex" style={{ background: '#F2F2F7', color: '#1C1C1E' }} data-admin>
       <AdminSidebar userEmail={user.email ?? ''} />
       <main className="flex-1 lg:ml-64 p-6 lg:p-8 min-h-screen">
         <div className="max-w-4xl mx-auto">{children}</div>

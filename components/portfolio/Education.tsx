@@ -11,24 +11,17 @@ const fadeUp = {
 
 export default function Education({ educations }: { educations: Education[] }) {
   return (
-    <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6">
+    <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6" style={{ background: 'var(--bg)' }}>
       <div className="max-w-3xl mx-auto">
 
-        {/* Page header */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          className="mb-10 sm:mb-14"
-        >
-          <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Background</p>
-          <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Education</h1>
-          <p className="text-sm text-[#8E8E93] mt-3">
+        <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-10 sm:mb-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>Background</p>
+          <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>Education</h1>
+          <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>
             {educations.length} qualification{educations.length !== 1 ? 's' : ''}
           </p>
         </motion.div>
 
-        {/* Education list */}
         <div className="space-y-4">
           {educations.map((edu, i) => (
             <motion.div
@@ -39,25 +32,22 @@ export default function Education({ educations }: { educations: Education[] }) {
               transition={{ type: 'spring', stiffness: 320, damping: 28, delay: i * 0.06 }}
               className="card overflow-hidden"
             >
-              {/* Color bar + icon */}
-              <div
-                className="px-5 sm:px-6 py-4 border-b flex items-start gap-4"
-                style={{ background: '#FAFAFA', borderColor: 'var(--border)' }}
-              >
-                <div className="w-10 h-10 rounded-2xl bg-[#007AFF]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <GraduationCap className="w-5 h-5 text-[#007AFF]" />
+              {/* Header row */}
+              <div className="px-5 sm:px-6 py-4 flex items-start gap-4"
+                style={{ background: 'var(--surface-2)', borderBottom: '1px solid var(--border)' }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                  style={{ background: 'var(--accent-dim)', border: '1px solid rgba(200,168,106,0.2)' }}>
+                  <GraduationCap className="w-5 h-5" style={{ color: 'var(--accent)' }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-bold text-[#1C1C1E] leading-snug">{edu.degree}</p>
-                      <p className="text-sm text-[#007AFF] font-medium mt-0.5">{edu.field_of_study}</p>
+                      <p className="text-sm font-bold leading-snug" style={{ color: 'var(--text)' }}>{edu.degree}</p>
+                      <p className="text-sm font-medium mt-0.5" style={{ color: 'var(--accent)' }}>{edu.field_of_study}</p>
                     </div>
                     {edu.is_current && (
-                      <span
-                        className="text-[10px] font-semibold rounded-full px-2 py-0.5 flex-shrink-0"
-                        style={{ background: 'rgba(52,199,89,0.1)', color: '#1A7A38' }}
-                      >
+                      <span className="text-[10px] font-semibold rounded-full px-2 py-0.5 flex-shrink-0"
+                        style={{ background: 'rgba(74,222,128,0.1)', color: '#4ADE80' }}>
                         Current
                       </span>
                     )}
@@ -68,13 +58,13 @@ export default function Education({ educations }: { educations: Education[] }) {
               {/* Body */}
               <div className="px-5 sm:px-6 py-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-[#1C1C1E]">{edu.institution}</p>
-                  <p className="text-xs text-[#8E8E93] flex-shrink-0 ml-3">
+                  <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{edu.institution}</p>
+                  <p className="text-xs flex-shrink-0 ml-3" style={{ color: 'var(--text-faint)' }}>
                     {edu.start_year} — {edu.is_current ? 'Present' : (edu.end_year ?? '')}
                   </p>
                 </div>
                 {edu.description && (
-                  <p className="text-sm text-[#636366] mt-2 leading-relaxed">{edu.description}</p>
+                  <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--text-muted)' }}>{edu.description}</p>
                 )}
               </div>
             </motion.div>
@@ -82,10 +72,11 @@ export default function Education({ educations }: { educations: Education[] }) {
 
           {educations.length === 0 && (
             <div className="card p-12 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-[#F2F2F7] flex items-center justify-center mx-auto mb-4">
-                <GraduationCap className="w-6 h-6 text-[#8E8E93]" />
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                style={{ background: 'var(--surface-2)' }}>
+                <GraduationCap className="w-6 h-6" style={{ color: 'var(--text-faint)' }} />
               </div>
-              <p className="text-sm text-[#8E8E93]">No education entries yet.</p>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No education entries yet.</p>
             </div>
           )}
         </div>

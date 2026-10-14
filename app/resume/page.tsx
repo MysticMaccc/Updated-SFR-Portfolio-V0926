@@ -48,58 +48,49 @@ export default function ResumePage() {
   return (
     <>
       <Navigation profile={displayProfile} />
-      <main className="pt-14 min-h-screen bg-white">
+      <main className="pt-14 min-h-screen" style={{ background: 'var(--bg)' }}>
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
 
           {/* Page header */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0} className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Resume</p>
-            <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Curriculum Vitae</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>Resume</p>
+            <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>Curriculum Vitae</h1>
           </motion.div>
 
           {/* Profile card */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.1} className="card p-6 sm:p-7 mb-6">
             <div className="flex items-start gap-4">
-              {displayProfile?.avatar_url ? (
-                <img
-                  src={displayProfile.avatar_url}
-                  alt={displayProfile?.name ?? 'Profile'}
-                  className="w-12 h-12 rounded-2xl object-cover flex-shrink-0"
-                  style={{ border: '1px solid var(--border)' }}
-                />
-              ) : (
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
-                  style={{ background: 'var(--ios-blue)' }}
-                >
-                  {(displayProfile?.name ?? 'SR').split(' ').map(n => n[0]).slice(0, 2).join('')}
-                </div>
-              )}
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg flex-shrink-0"
+                style={{ background: 'var(--accent)', color: '#0D0C0A' }}>
+                {(displayProfile?.name ?? 'SR').split(' ').map(n => n[0]).slice(0, 2).join('')}
+              </div>
               <div>
-                <p className="text-lg font-bold text-[#1C1C1E] leading-tight">{displayProfile?.name}</p>
-                <p className="text-[#007AFF] font-medium text-sm mt-0.5">{displayProfile?.title}</p>
+                <p className="text-lg font-bold leading-tight" style={{ color: 'var(--text)' }}>{displayProfile?.name}</p>
+                <p className="text-sm font-medium mt-0.5" style={{ color: 'var(--accent)' }}>{displayProfile?.title}</p>
                 {displayProfile?.email && (
-                  <p className="text-xs text-[#8E8E93] mt-1">{displayProfile.email}</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-faint)' }}>{displayProfile.email}</p>
                 )}
               </div>
             </div>
 
             {displayProfile?.bio && (
-              <p className="text-sm text-[#636366] leading-relaxed mt-5 pt-5 border-t" style={{ borderColor: 'var(--border)' }}>
+              <p className="text-sm leading-relaxed mt-5 pt-5" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border)' }}>
                 {displayProfile.bio}
               </p>
             )}
           </motion.div>
 
           {/* Download section */}
-          <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.2} className="card p-6 mb-8 flex items-center justify-between gap-4">
+          <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.2}
+            className="card p-6 mb-8 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#007AFF]/08 flex items-center justify-center flex-shrink-0">
-                <FileText className="w-5 h-5 text-[#007AFF]" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: 'var(--accent-dim)', border: '1px solid rgba(200,168,106,0.2)' }}>
+                <FileText className="w-5 h-5" style={{ color: 'var(--accent)' }} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#1C1C1E]">PDF Resume</p>
-                <p className="text-xs text-[#8E8E93] mt-0.5">Generated from live portfolio data</p>
+                <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>PDF Resume</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Generated from live portfolio data</p>
               </div>
             </div>
             <ResumeDownloadButton />
@@ -107,17 +98,27 @@ export default function ResumePage() {
 
           {/* Portfolio links */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.3}>
-            <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-3">Explore Portfolio</p>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-faint)' }}>
+              Explore Portfolio
+            </p>
             <div className="space-y-2">
               {SECTIONS.map(s => (
                 <Link
                   key={s.href}
                   href={s.href}
-                  className="flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all duration-200 hover:border-[#007AFF]/30 hover:bg-[#007AFF]/02 group"
-                  style={{ borderColor: 'var(--border)' }}
+                  className="flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-200 group"
+                  style={{ border: '1px solid var(--border)', color: 'var(--text)' }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(200,168,106,0.35)';
+                    (e.currentTarget as HTMLElement).style.background = 'var(--accent-dim)';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
+                    (e.currentTarget as HTMLElement).style.background = 'transparent';
+                  }}
                 >
-                  <span className="text-sm font-medium text-[#1C1C1E]">{s.label}</span>
-                  <ArrowRight className="w-4 h-4 text-[#C7C7CC] group-hover:text-[#007AFF] transition-colors" />
+                  <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>{s.label}</span>
+                  <ArrowRight className="w-4 h-4 transition-colors" style={{ color: 'var(--text-faint)' }} />
                 </Link>
               ))}
             </div>

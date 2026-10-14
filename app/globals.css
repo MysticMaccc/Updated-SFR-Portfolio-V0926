@@ -2,66 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap");
 
+/* ========================
+   Design tokens
+   ======================== */
 :root {
-  --ios-blue: #007aff;
-  --ios-green: #34c759;
-  --ios-orange: #ff9500;
-  --ios-red: #ff3b30;
-  --ios-purple: #af52de;
-  --text-primary: #1c1c1e;
-  --text-secondary: #636366;
-  --text-tertiary: #8e8e93;
-  --border: #e5e5ea;
-  --surface: #ffffff;
-  --surface-secondary: #f2f2f7;
+  --bg:           #0D0C0A;
+  --surface:      #141210;
+  --surface-2:    #1C1914;
+  --border:       #252118;
+  --border-light: #302C25;
+  --text:         #EDE8DF;
+  --text-muted:   #8A8478;
+  --text-faint:   #4A4440;
+  --accent:       #C8A86A;
+  --accent-dim:   rgba(200, 168, 106, 0.1);
+  --accent-hover: #DFC07E;
+
+  /* Status (kept for admin/toast compatibility) */
+  --ios-blue:   #60A5FA;
+  --ios-green:  #4ADE80;
+  --ios-red:    #F87171;
+  --ios-orange: #FB923C;
+  --ios-purple: #C084FC;
+
+  /* Legacy aliases */
+  --text-primary:   var(--text);
+  --text-secondary: var(--text-muted);
+  --text-tertiary:  var(--text-faint);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+/* ========================
+   Reset
+   ======================== */
+* { box-sizing: border-box; padding: 0; margin: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "Segoe UI",
-    sans-serif;
-  background: #ffffff;
-  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* ========================
-   Base card
+   Typography
+   ======================== */
+.font-serif { font-family: "Playfair Display", Georgia, serif; }
+
+/* ========================
+   Base card  (dark)
    ======================== */
 .card {
-  background: #ffffff;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Keep glass-card alias for compatibility */
 .glass-card {
-  background: #ffffff;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
 }
 
 /* ========================
    Navigation
    ======================== */
 .ios-nav {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(13, 12, 10, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
 
@@ -69,84 +82,60 @@ body {
    Buttons
    ======================== */
 .ios-btn-primary {
-  background: var(--ios-blue);
-  color: #ffffff;
-  border-radius: 10px;
+  background: var(--accent);
+  color: #0D0C0A;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   padding: 10px 20px;
   border: none;
   cursor: pointer;
-  transition:
-    opacity 0.15s ease,
-    transform 0.12s ease;
+  transition: opacity 0.15s ease, transform 0.12s ease;
   display: inline-flex;
   align-items: center;
   gap: 7px;
   text-decoration: none;
+  letter-spacing: 0.01em;
 }
-
-.ios-btn-primary:hover {
-  opacity: 0.85;
-}
-
-.ios-btn-primary:active {
-  opacity: 0.7;
-  transform: scale(0.96);
-}
+.ios-btn-primary:hover  { opacity: 0.88; }
+.ios-btn-primary:active { opacity: 0.72; transform: scale(0.96); }
 
 .ios-btn-secondary {
   background: transparent;
-  color: var(--ios-blue);
-  border: 1.5px solid var(--ios-blue);
-  border-radius: 10px;
+  color: var(--accent);
+  border: 1.5px solid var(--border-light);
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   padding: 9px 20px;
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    transform 0.12s ease;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
   display: inline-flex;
   align-items: center;
   gap: 7px;
   text-decoration: none;
+  letter-spacing: 0.01em;
 }
-
-.ios-btn-secondary:hover {
-  background: rgba(0, 122, 255, 0.06);
-}
-
-.ios-btn-secondary:active {
-  transform: scale(0.96);
-}
+.ios-btn-secondary:hover  { border-color: var(--accent); background: var(--accent-dim); }
+.ios-btn-secondary:active { transform: scale(0.96); }
 
 /* ========================
-   Inputs
+   Inputs  (dark)
    ======================== */
 .ios-input {
-  background: var(--surface-secondary);
-  border: 1.5px solid transparent;
-  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
   padding: 11px 14px;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-family: inherit;
-  color: var(--text-primary);
+  color: var(--text);
   width: 100%;
   outline: none;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
-
-.ios-input:focus {
-  background: #ffffff;
-  border-color: var(--ios-blue);
-}
-
-.ios-input::placeholder {
-  color: var(--text-tertiary);
-}
+.ios-input:focus         { background: var(--surface); border-color: var(--accent); }
+.ios-input::placeholder  { color: var(--text-faint); }
 
 /* ========================
    Section label
@@ -154,9 +143,9 @@ body {
 .section-label {
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-tertiary);
+  color: var(--accent);
   margin-bottom: 8px;
 }
 
@@ -165,7 +154,7 @@ body {
    ======================== */
 .skill-pill {
   display: inline-block;
-  border-radius: 6px;
+  border-radius: 5px;
   padding: 4px 10px;
   font-size: 0.8rem;
   font-weight: 500;
@@ -174,44 +163,74 @@ body {
 /* ========================
    Scrollbar
    ======================== */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
+::-webkit-scrollbar          { width: 4px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: var(--border-light); border-radius: 2px; }
 
 /* ========================
    Text selection
    ======================== */
-::selection {
-  background: rgba(0, 122, 255, 0.15);
-}
+::selection { background: rgba(200, 168, 106, 0.2); }
 
 /* ========================
-   Hide scrollbar (thumbnail strips)
+   Scrollbar hide
    ======================== */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 
 /* ========================
    Reduced motion
    ======================== */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
+
+/* ========================
+   Admin scope — restore light theme
+   ======================== */
+[data-admin] {
+  background: #F2F2F7;
+  color: #1C1C1E;
+}
+
+[data-admin] .card {
+  background: #ffffff !important;
+  border-color: #E5E5EA !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+
+[data-admin] .glass-card {
+  background: #ffffff !important;
+  border-color: #E5E5EA !important;
+}
+
+[data-admin] .ios-input {
+  background: #F2F2F7 !important;
+  border-color: transparent !important;
+  color: #1C1C1E !important;
+}
+[data-admin] .ios-input:focus        { background: #ffffff !important; border-color: #007AFF !important; }
+[data-admin] .ios-input::placeholder { color: #8E8E93 !important; }
+
+[data-admin] .ios-btn-primary {
+  background: #007AFF !important;
+  color: #ffffff !important;
+}
+
+[data-admin] .ios-btn-secondary {
+  color: #007AFF !important;
+  border-color: #007AFF !important;
+  background: transparent !important;
+}
+[data-admin] .ios-btn-secondary:hover { background: rgba(0,122,255,0.06) !important; }
+
+[data-admin] .ios-nav {
+  background: rgba(255,255,255,0.92) !important;
+  border-bottom-color: #E5E5EA !important;
+}
+
+[data-admin] ::-webkit-scrollbar-thumb { background: #E5E5EA; }

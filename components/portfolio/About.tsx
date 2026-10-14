@@ -62,46 +62,31 @@ export default function About({
   ];
 
   return (
-    <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6">
+    <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6" style={{ background: 'var(--bg)' }}>
       <div className="max-w-5xl mx-auto">
 
-        {/* Page header */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          className="mb-10 sm:mb-14"
-        >
-          <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">About</p>
-          <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight leading-tight">
+        <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-10 sm:mb-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>About</p>
+          <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight leading-tight" style={{ color: 'var(--text)' }}>
             {profile?.name ?? 'Full Stack Developer'}
           </h1>
-          <p className="text-sm text-[#8E8E93] mt-3">{profile?.title ?? 'Full Stack Developer'}</p>
+          <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>{profile?.title ?? 'Full Stack Developer'}</p>
         </motion.div>
 
-        {/* Content grid */}
         <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
 
-          {/* Bio — left 2/3 */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            transition={{ delay: 0.15 }}
-            className="md:col-span-2"
-          >
+          {/* Bio */}
+          <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0.15 }} className="md:col-span-2">
             <div className="card p-6 sm:p-8 h-full">
-              <p className="text-[#1C1C1E] font-semibold text-sm mb-1">
+              <p className="text-sm font-semibold mb-3" style={{ color: 'var(--accent)' }}>
                 {profile?.title ?? 'Full Stack Developer'}
               </p>
-
-              <p className="text-sm text-[#636366] leading-relaxed mt-3">
-                {profile?.bio ??
-                  'Full Stack Developer with 7+ years of experience designing and building scalable web and mobile applications. Specialized in React/Next.js and Laravel ecosystems. Experienced in leading projects from requirement gathering through deployment.'}
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)', lineHeight: '1.75' }}>
+                {profile?.bio ?? 'Full Stack Developer with 7+ years of experience designing and building scalable web and mobile applications.'}
               </p>
 
               {contacts.length > 0 && (
-                <div className="mt-6 pt-6 border-t space-y-3" style={{ borderColor: 'var(--border)' }}>
+                <div className="mt-6 pt-6 space-y-3" style={{ borderTop: '1px solid var(--border)' }}>
                   {contacts.map(({ icon: Icon, label, href, external }) =>
                     href ? (
                       <a
@@ -109,16 +94,21 @@ export default function About({
                         href={href}
                         target={external ? '_blank' : undefined}
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 text-sm text-[#636366] hover:text-[#007AFF] transition-colors group"
+                        className="flex items-center gap-3 text-sm transition-colors group"
+                        style={{ color: 'var(--text-muted)' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                       >
-                        <span className="w-7 h-7 rounded-lg bg-[#F2F2F7] flex items-center justify-center flex-shrink-0 group-hover:bg-[#007AFF]/08 transition-colors">
+                        <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                          style={{ background: 'var(--surface-2)' }}>
                           <Icon className="w-3.5 h-3.5" />
                         </span>
                         {label}
                       </a>
                     ) : (
-                      <div key={label} className="flex items-center gap-3 text-sm text-[#636366]">
-                        <span className="w-7 h-7 rounded-lg bg-[#F2F2F7] flex items-center justify-center flex-shrink-0">
+                      <div key={label} className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-muted)' }}>
+                        <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ background: 'var(--surface-2)' }}>
                           <Icon className="w-3.5 h-3.5" />
                         </span>
                         {label}
@@ -130,23 +120,20 @@ export default function About({
             </div>
           </motion.div>
 
-          {/* Stats — right 1/3 */}
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4 content-start"
-          >
+          {/* Stats */}
+          <motion.div variants={stagger} initial="hidden" animate="show"
+            className="grid grid-cols-2 md:grid-cols-1 gap-3 sm:gap-4 content-start">
             {stats.map(s => (
               <motion.div
                 key={s.label}
                 variants={fadeUp}
-                className="card p-5 text-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                className="card p-5 text-center transition-all duration-200 hover:-translate-y-0.5"
+                style={{ cursor: 'default' }}
               >
-                <p className="text-3xl sm:text-4xl font-bold text-[#1C1C1E] tracking-tight">
+                <p className="text-3xl sm:text-4xl font-serif font-bold tracking-tight" style={{ color: 'var(--accent)' }}>
                   <CountUp value={s.value} />
                 </p>
-                <p className="text-xs text-[#8E8E93] mt-1.5 font-medium">{s.label}</p>
+                <p className="text-xs mt-1.5 font-medium" style={{ color: 'var(--text-faint)' }}>{s.label}</p>
               </motion.div>
             ))}
           </motion.div>
