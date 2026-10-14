@@ -11,9 +11,9 @@ const ProjectGallery = dynamic(() => import('./ProjectGallery'), { ssr: false })
 const FILTERS = ['All', 'Web', 'Mobile'];
 
 const CATEGORY_BADGE: Record<string, { bg: string; text: string }> = {
-  web:    { bg: 'rgba(0,122,255,0.08)',  text: '#005EC4' },
-  mobile: { bg: 'rgba(52,199,89,0.1)',   text: '#1A7A38' },
-  other:  { bg: 'rgba(142,142,147,0.1)', text: '#636366' },
+  web:    { bg: 'rgba(96,165,250,0.12)',  text: '#60A5FA' },
+  mobile: { bg: 'rgba(74,222,128,0.1)',   text: '#4ADE80' },
+  other:  { bg: 'rgba(200,168,106,0.1)',  text: '#C8A86A' },
 };
 
 const fadeUp = {
@@ -56,47 +56,33 @@ export default function Projects({ projects, projectImages = {} }: Props) {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6">
+      <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6" style={{ background: 'var(--bg)' }}>
         <div className="max-w-5xl mx-auto">
 
           {/* Page header */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            className="mb-8 sm:mb-12"
-          >
-            <p className="text-xs font-semibold text-[#8E8E93] uppercase tracking-widest mb-3">Projects</p>
-            <h1 className="text-3xl sm:text-5xl font-bold text-[#1C1C1E] tracking-tight">Portfolio</h1>
-            <p className="text-sm text-[#8E8E93] mt-3">
+          <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-8 sm:mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>Projects</p>
+            <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>Portfolio</h1>
+            <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>
               {projects.length} project{projects.length !== 1 ? 's' : ''}
             </p>
           </motion.div>
 
-          {/* Filter — iOS segmented control */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            transition={{ delay: 0.1 }}
-            className="mb-8 sm:mb-10"
-          >
-            <div
-              className="inline-flex p-1 rounded-xl"
-              style={{ background: '#E9E9EB' }}
-            >
+          {/* Filter tabs */}
+          <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0.1 }} className="mb-8 sm:mb-10">
+            <div className="inline-flex p-1 rounded-xl" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
               {FILTERS.map(f => (
                 <button
                   key={f}
                   onClick={() => { setFilter(f); setShowAll(false); }}
-                  className="relative px-5 py-1.5 rounded-[9px] text-sm font-medium"
-                  style={{ color: filter === f ? '#1C1C1E' : '#636366' }}
+                  className="relative px-5 py-1.5 rounded-[9px] text-sm font-medium transition-colors"
+                  style={{ color: filter === f ? '#0D0C0A' : 'var(--text-muted)' }}
                 >
                   {filter === f && (
                     <motion.span
                       layoutId="filter-segment"
-                      className="absolute inset-0 rounded-[9px] bg-white"
-                      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.12)' }}
+                      className="absolute inset-0 rounded-[9px]"
+                      style={{ background: 'var(--accent)' }}
                       transition={{ type: 'spring', stiffness: 480, damping: 34 }}
                     />
                   )}
@@ -107,12 +93,7 @@ export default function Projects({ projects, projectImages = {} }: Props) {
           </motion.div>
 
           {/* Grid */}
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="show"
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
+          <motion.div variants={stagger} initial="hidden" animate="show" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <AnimatePresence mode="popLayout">
               {visible.map(project => {
                 const badge = CATEGORY_BADGE[project.category] ?? CATEGORY_BADGE.other;
@@ -125,9 +106,9 @@ export default function Projects({ projects, projectImages = {} }: Props) {
                     key={project.id}
                     variants={fadeUp}
                     layout
-                    className="card flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-lg bg-white overflow-hidden"
+                    className="card flex flex-col transition-all duration-200 hover:-translate-y-1 overflow-hidden"
                   >
-                    {/* Image banner (if images exist) */}
+                    {/* Image banner */}
                     {hasImages && (
                       <div
                         className="relative w-full aspect-video overflow-hidden cursor-pointer group"
@@ -138,18 +119,18 @@ export default function Projects({ projects, projectImages = {} }: Props) {
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        {/* Overlay on hover */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300 flex items-center justify-center">
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2 bg-black/60 rounded-xl px-3 py-1.5">
-                            <Images className="w-3.5 h-3.5 text-white" />
-                            <span className="text-white text-xs font-semibold">View Photos</span>
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2 rounded-xl px-3 py-1.5"
+                            style={{ background: 'rgba(13,12,10,0.7)', border: '1px solid rgba(200,168,106,0.3)' }}>
+                            <Images className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                            <span className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>View Photos</span>
                           </div>
                         </div>
-                        {/* Image count badge */}
                         {images.length > 1 && (
-                          <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/60 rounded-lg px-2 py-0.5">
-                            <Images className="w-3 h-3 text-white" />
-                            <span className="text-white text-[10px] font-semibold">{images.length}</span>
+                          <div className="absolute top-2 right-2 flex items-center gap-1 rounded-lg px-2 py-0.5"
+                            style={{ background: 'rgba(13,12,10,0.7)', border: '1px solid var(--border)' }}>
+                            <Images className="w-3 h-3" style={{ color: 'var(--accent)' }} />
+                            <span className="text-[10px] font-semibold" style={{ color: 'var(--accent)' }}>{images.length}</span>
                           </div>
                         )}
                       </div>
@@ -158,24 +139,22 @@ export default function Projects({ projects, projectImages = {} }: Props) {
                     <div className="p-5 flex flex-col flex-1">
                       {/* Top row */}
                       <div className="flex items-center justify-between mb-3">
-                        <span
-                          className="text-[10px] font-bold uppercase tracking-wider rounded-lg px-2.5 py-1"
-                          style={{ background: badge.bg, color: badge.text }}
-                        >
+                        <span className="text-[10px] font-bold uppercase tracking-wider rounded-lg px-2.5 py-1"
+                          style={{ background: badge.bg, color: badge.text }}>
                           {project.category}
                         </span>
                         {project.featured && (
-                          <Star className="w-3.5 h-3.5 fill-[#FF9500] text-[#FF9500]" />
+                          <Star className="w-3.5 h-3.5" style={{ fill: 'var(--accent)', color: 'var(--accent)' }} />
                         )}
                       </div>
 
                       {/* Title */}
-                      <h3 className="font-semibold text-[#1C1C1E] text-sm sm:text-base mb-2 leading-snug">
+                      <h3 className="font-semibold text-sm sm:text-base mb-2 leading-snug" style={{ color: 'var(--text)' }}>
                         {project.title}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-xs sm:text-sm text-[#636366] leading-relaxed flex-1 mb-4 line-clamp-3">
+                      <p className="text-xs sm:text-sm leading-relaxed flex-1 mb-4 line-clamp-3" style={{ color: 'var(--text-muted)' }}>
                         {project.description}
                       </p>
 
@@ -183,60 +162,44 @@ export default function Projects({ projects, projectImages = {} }: Props) {
                       {project.tech_stack.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-4">
                           {project.tech_stack.map(t => (
-                            <span
-                              key={t}
-                              className="text-[10px] font-medium rounded-md px-2 py-0.5"
-                              style={{ background: '#F2F2F7', color: '#636366' }}
-                            >
+                            <span key={t} className="text-[10px] font-medium rounded-md px-2 py-0.5"
+                              style={{ background: 'var(--surface-2)', color: 'var(--text-faint)', border: '1px solid var(--border)' }}>
                               {t}
                             </span>
                           ))}
                         </div>
                       )}
 
-                      {/* Bottom row: links + gallery button */}
-                      <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
+                      {/* Bottom row */}
+                      <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--border)' }}>
                         <div className="flex gap-4">
                           {project.url && (
-                            <a
-                              href={project.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-xs font-semibold text-[#007AFF] hover:opacity-70 transition-opacity"
-                            >
+                            <a href={project.url} target="_blank" rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
+                              style={{ color: 'var(--accent)' }}>
                               <ExternalLink className="w-3.5 h-3.5" />
                               Live
                             </a>
                           )}
                           {project.github_url && (
-                            <a
-                              href={project.github_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-xs font-medium text-[#636366] hover:text-[#1C1C1E] transition-colors"
-                            >
+                            <a href={project.github_url} target="_blank" rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-xs font-medium transition-colors"
+                              style={{ color: 'var(--text-muted)' }}
+                              onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
+                              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
                               <Github className="w-3.5 h-3.5" />
                               Source
                             </a>
                           )}
                         </div>
 
-                        {/* Gallery trigger (only if images exist and no banner shown already) */}
-                        {hasImages && !coverImage && (
+                        {hasImages && (
                           <button
                             onClick={() => openGallery(project, 0)}
-                            className="flex items-center gap-1 text-xs font-medium text-[#636366] hover:text-[#007AFF] transition-colors"
-                          >
-                            <Images className="w-3.5 h-3.5" />
-                            {images.length} photo{images.length > 1 ? 's' : ''}
-                          </button>
-                        )}
-
-                        {hasImages && coverImage && (
-                          <button
-                            onClick={() => openGallery(project, 0)}
-                            className="flex items-center gap-1 text-xs font-medium text-[#636366] hover:text-[#007AFF] transition-colors"
-                          >
+                            className="flex items-center gap-1 text-xs font-medium transition-colors"
+                            style={{ color: 'var(--text-faint)' }}
+                            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-faint)')}>
                             <Images className="w-3.5 h-3.5" />
                             {images.length} photo{images.length > 1 ? 's' : ''}
                           </button>
@@ -250,17 +213,8 @@ export default function Projects({ projects, projectImages = {} }: Props) {
           </motion.div>
 
           {filtered.length > 6 && (
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              transition={{ delay: 0.4 }}
-              className="mt-8 text-center"
-            >
-              <button
-                onClick={() => setShowAll(!showAll)}
-                className="ios-btn-secondary text-sm"
-              >
+            <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0.4 }} className="mt-8 text-center">
+              <button onClick={() => setShowAll(!showAll)} className="ios-btn-secondary text-sm">
                 {showAll ? 'Show Less' : `Show All ${filtered.length}`}
               </button>
             </motion.div>
