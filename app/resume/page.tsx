@@ -7,7 +7,7 @@ import Navigation from '@/components/portfolio/Navigation';
 import Footer from '@/components/portfolio/Footer';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { FileText, Download, ArrowRight } from 'lucide-react';
+import { FileText, Download, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Profile } from '@/types';
 
@@ -20,15 +20,11 @@ const ResumeDownloadButton = dynamic(
   )}
 );
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: (d = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94], delay: d } }),
-};
-
 const SECTIONS = [
   { label: 'About',      href: '/about' },
   { label: 'Skills',     href: '/skills' },
   { label: 'Experience', href: '/experience' },
+  { label: 'Education',  href: '/education' },
   { label: 'Projects',   href: '/projects' },
   { label: 'Training',   href: '/training' },
 ];
@@ -48,82 +44,96 @@ export default function ResumePage() {
   return (
     <>
       <Navigation profile={displayProfile} />
-      <main className="pt-14 min-h-screen" style={{ background: 'var(--bg)' }}>
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+      <main className="pt-12 min-h-screen relative z-10" style={{ background: 'var(--bg)' }}>
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 py-14 sm:py-20">
 
-          {/* Page header */}
-          <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0} className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>Resume</p>
-            <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>Curriculum Vitae</h1>
+          {/* Section marker — purely decorative, section-meta is fine here */}
+          <div className="flex items-center justify-between mb-12 pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
+            <span className="section-meta" style={{ color: 'var(--text-faint)' }}>[ CV ] — Curriculum Vitae</span>
+            <span className="section-meta" style={{ color: 'var(--text-faint)' }}>Read.cv</span>
+          </div>
+
+          {/* Heading */}
+          <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-14">
+            <span className="heading-bold text-[clamp(2.5rem,7vw,6rem)]">CURRICULUM</span>
+            <span className="heading-outline text-[clamp(2.5rem,7vw,6rem)]">VITAE</span>
           </motion.div>
 
-          {/* Profile card */}
-          <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.1} className="card p-6 sm:p-7 mb-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg flex-shrink-0"
-                style={{ background: 'var(--accent)', color: '#0D0C0A' }}>
-                {(displayProfile?.name ?? 'SR').split(' ').map(n => n[0]).slice(0, 2).join('')}
-              </div>
-              <div>
-                <p className="text-lg font-bold leading-tight" style={{ color: 'var(--text)' }}>{displayProfile?.name}</p>
-                <p className="text-sm font-medium mt-0.5" style={{ color: 'var(--accent)' }}>{displayProfile?.title}</p>
+          <div className="grid lg:grid-cols-2 gap-10">
+
+            {/* ID panel */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1, duration: 0.5 }}>
+              <div className="relative p-6 mb-6" style={{ border: '1px solid var(--border)' }}>
+                {/* Corner marks */}
+                <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2" style={{ borderColor: 'var(--accent-2)' }} />
+                <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2" style={{ borderColor: 'var(--accent-2)' }} />
+                <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2" style={{ borderColor: 'var(--accent-2)' }} />
+                <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2" style={{ borderColor: 'var(--accent-2)' }} />
+
+                <div className="flex items-center justify-between mb-5 pb-4" style={{ borderBottom: '1px solid var(--border)' }}>
+                  <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-faint)' }}>Subject / 001</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#4ADE80', boxShadow: '0 0 6px #4ADE80' }} />
+                    <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#4ADE80' }}>Online</span>
+                  </div>
+                </div>
+
+                <p className="text-2xl font-bold mb-1" style={{ color: 'var(--text)' }}>{displayProfile?.name}</p>
+                <p className="text-sm font-medium mb-5" style={{ color: 'var(--accent-2)' }}>{displayProfile?.title}</p>
                 {displayProfile?.email && (
-                  <p className="text-xs mt-1" style={{ color: 'var(--text-faint)' }}>{displayProfile.email}</p>
+                  <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{displayProfile.email}</p>
+                )}
+
+                {displayProfile?.bio && (
+                  <p className="text-sm leading-relaxed mt-5 pt-5" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border)', lineHeight: '1.7' }}>
+                    {displayProfile.bio}
+                  </p>
                 )}
               </div>
-            </div>
 
-            {displayProfile?.bio && (
-              <p className="text-sm leading-relaxed mt-5 pt-5" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border)' }}>
-                {displayProfile.bio}
-              </p>
-            )}
-          </motion.div>
-
-          {/* Download section */}
-          <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.2}
-            className="card p-6 mb-8 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'var(--accent-dim)', border: '1px solid rgba(200,168,106,0.2)' }}>
-                <FileText className="w-5 h-5" style={{ color: 'var(--accent)' }} />
+              {/* Download */}
+              <div className="flex items-center justify-between p-5" style={{ border: '1px solid var(--border)' }}>
+                <div className="flex items-center gap-3">
+                  <FileText className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--accent-2)' }} />
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>Download CV</p>
+                    <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--text-faint)' }}>Generated from live data</p>
+                  </div>
+                </div>
+                <ResumeDownloadButton />
               </div>
-              <div>
-                <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>PDF Resume</p>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Generated from live portfolio data</p>
+            </motion.div>
+
+            {/* Portfolio links */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--text-faint)' }}>Explore Portfolio</p>
+              <div style={{ borderTop: '1px solid var(--border)' }}>
+                {SECTIONS.map((s, i) => (
+                  <Link
+                    key={s.href}
+                    href={s.href}
+                    className="flex items-center justify-between py-5 group transition-all"
+                    style={{ borderBottom: '1px solid var(--border)', textDecoration: 'none' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.paddingLeft = '8px'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.paddingLeft = '0'; }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="section-meta" style={{ color: 'var(--text-faint)' }}>
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className="text-sm font-semibold uppercase tracking-wider transition-colors"
+                        style={{ color: 'var(--text-muted)' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
+                        {s.label}
+                      </span>
+                    </div>
+                    <ArrowUpRight className="w-4 h-4 transition-colors" style={{ color: 'var(--text-faint)' }} />
+                  </Link>
+                ))}
               </div>
-            </div>
-            <ResumeDownloadButton />
-          </motion.div>
-
-          {/* Portfolio links */}
-          <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0.3}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-faint)' }}>
-              Explore Portfolio
-            </p>
-            <div className="space-y-2">
-              {SECTIONS.map(s => (
-                <Link
-                  key={s.href}
-                  href={s.href}
-                  className="flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-200 group"
-                  style={{ border: '1px solid var(--border)', color: 'var(--text)' }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(200,168,106,0.35)';
-                    (e.currentTarget as HTMLElement).style.background = 'var(--accent-dim)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
-                    (e.currentTarget as HTMLElement).style.background = 'transparent';
-                  }}
-                >
-                  <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>{s.label}</span>
-                  <ArrowRight className="w-4 h-4 transition-colors" style={{ color: 'var(--text-faint)' }} />
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-
+            </motion.div>
+          </div>
         </div>
       </main>
       <Footer profile={displayProfile} />

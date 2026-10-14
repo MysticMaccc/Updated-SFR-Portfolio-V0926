@@ -1,13 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, BookOpen } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import type { Training } from '@/types';
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] } },
-};
 
 export default function Trainings({ trainings }: { trainings: Training[] }) {
   const grouped = trainings.reduce<Record<string, Training[]>>((acc, t) => {
@@ -16,88 +11,104 @@ export default function Trainings({ trainings }: { trainings: Training[] }) {
     return acc;
   }, {});
 
-  return (
-    <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6" style={{ background: 'var(--bg)' }}>
-      <div className="max-w-3xl mx-auto">
+  const providerList = Object.entries(grouped);
 
-        <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-10 sm:mb-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>Training</p>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>Certifications</h1>
-          <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>
-            {trainings.length} course{trainings.length !== 1 ? 's' : ''} from {Object.keys(grouped).length} provider{Object.keys(grouped).length !== 1 ? 's' : ''}
+  return (
+    <div className="min-h-[calc(100vh-48px)] py-14 sm:py-20 px-5 sm:px-10 relative z-10" style={{ background: 'var(--bg)' }}>
+      <div className="max-w-[1400px] mx-auto">
+
+        {/* Section marker */}
+        <div className="flex items-center justify-between mb-12 pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
+          <span className="section-meta" style={{ color: 'var(--text-faint)' }}>[ 07 ] — Training</span>
+          <span className="section-meta" style={{ color: 'var(--text-faint)' }}>Certifications</span>
+        </div>
+
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.5 }}
+          className="mb-12"
+        >
+          <span className="heading-bold text-[clamp(2.5rem,7vw,6rem)]">COURSES</span>
+          <span className="heading-outline-orange text-[clamp(2.5rem,7vw,6rem)]">&amp; CERTS</span>
+          <p className="text-base mt-4 font-medium" style={{ color: 'var(--text-muted)' }}>
+            {trainings.length} course{trainings.length !== 1 ? 's' : ''} · {providerList.length} provider{providerList.length !== 1 ? 's' : ''}
           </p>
         </motion.div>
 
-        <div className="space-y-5">
-          {Object.entries(grouped).map(([provider, courses]) => (
+        {/* Provider groups */}
+        <div style={{ borderTop: '1px solid var(--border)' }}>
+          {providerList.map(([provider, courses], pi) => (
             <motion.div
               key={provider}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-              className="card overflow-hidden"
+              transition={{ duration: 0.4, delay: pi * 0.06 }}
             >
               {/* Provider header */}
-              <div className="px-5 sm:px-6 py-3.5 flex items-center gap-2.5"
-                style={{ background: 'var(--surface-2)', borderBottom: '1px solid var(--border)' }}>
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'var(--accent-dim)', border: '1px solid rgba(200,168,106,0.2)' }}>
-                  <BookOpen className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+              <div className="flex items-center justify-between py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+                <div className="flex items-center gap-4">
+                  <span className="section-meta" style={{ color: 'var(--accent-2)' }}>
+                    {String(pi + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                    {provider}
+                  </span>
                 </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>{provider}</p>
-                  <p className="text-[10px]" style={{ color: 'var(--text-faint)' }}>
-                    {courses.length} course{courses.length !== 1 ? 's' : ''}
-                  </p>
-                </div>
+                <span className="text-xs font-medium" style={{ color: 'var(--text-faint)' }}>
+                  {courses.length} course{courses.length !== 1 ? 's' : ''}
+                </span>
               </div>
 
               {/* Courses */}
-              <div className="divide-y" style={{ borderColor: 'var(--border)' }}>
-                {courses.map(t => {
-                  const hasUrl = !!t.certificate_url;
-                  const Row = hasUrl ? 'a' : 'div';
-                  const rowProps = hasUrl
-                    ? { href: t.certificate_url!, target: '_blank', rel: 'noopener noreferrer' }
-                    : {};
+              {courses.map(t => {
+                const hasUrl = !!t.certificate_url;
+                const Row = hasUrl ? 'a' : 'div';
+                const rowProps = hasUrl
+                  ? { href: t.certificate_url!, target: '_blank', rel: 'noopener noreferrer' }
+                  : {};
 
-                  return (
-                    <Row
-                      key={t.id}
-                      {...rowProps}
-                      className={[
-                        'flex items-center justify-between px-5 sm:px-6 py-4 gap-3 transition-colors',
-                        hasUrl ? 'cursor-pointer group' : '',
-                      ].join(' ')}
-                      style={{ background: 'transparent' }}
-                      onMouseEnter={hasUrl ? (e: React.MouseEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; } : undefined}
-                      onMouseLeave={hasUrl ? (e: React.MouseEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; } : undefined}
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm leading-snug font-medium transition-colors"
-                          style={{ color: 'var(--text)' }}>
-                          {t.title}
-                        </p>
-                        {t.year && (
-                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-faint)' }}>{t.year}</p>
-                        )}
-                      </div>
-
-                      {hasUrl && (
-                        <div className="flex-shrink-0 flex items-center gap-1.5 transition-colors"
-                          style={{ color: 'var(--text-faint)' }}>
-                          <span className="text-xs font-medium hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity"
-                            style={{ color: 'var(--accent)' }}>
-                            Open
-                          </span>
-                          <ExternalLink className="w-3.5 h-3.5 group-hover:text-[var(--accent)]" />
-                        </div>
+                return (
+                  <Row
+                    key={t.id}
+                    {...rowProps}
+                    className="flex items-center justify-between py-4 pl-10 gap-4 transition-colors group"
+                    style={{
+                      borderBottom: '1px solid var(--border)',
+                      textDecoration: 'none',
+                      cursor: hasUrl ? 'pointer' : 'default',
+                    }}
+                    onMouseEnter={hasUrl ? (e: React.MouseEvent<HTMLElement>) => {
+                      (e.currentTarget as HTMLElement).style.background = 'var(--surface)';
+                    } : undefined}
+                    onMouseLeave={hasUrl ? (e: React.MouseEvent<HTMLElement>) => {
+                      (e.currentTarget as HTMLElement).style.background = 'transparent';
+                    } : undefined}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium leading-snug transition-colors" style={{ color: 'var(--text-muted)' }}>
+                        {t.title}
+                      </p>
+                      {t.year && (
+                        <p className="text-xs font-medium mt-1" style={{ color: 'var(--text-faint)' }}>{t.year}</p>
                       )}
-                    </Row>
-                  );
-                })}
-              </div>
+                    </div>
+
+                    {hasUrl && (
+                      <div className="flex items-center gap-2 flex-shrink-0 transition-colors" style={{ color: 'var(--text-faint)' }}>
+                        <span className="text-xs font-semibold hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity"
+                          style={{ color: 'var(--accent-2)' }}>
+                          Open
+                        </span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </div>
+                    )}
+                  </Row>
+                );
+              })}
             </motion.div>
           ))}
         </div>

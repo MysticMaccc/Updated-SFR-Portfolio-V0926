@@ -2,25 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 /* ========================
-   Design tokens
+   Design tokens — jawe.dev inspired
    ======================== */
 :root {
-  --bg:           #0D0C0A;
-  --surface:      #141210;
-  --surface-2:    #1C1914;
-  --border:       #252118;
-  --border-light: #302C25;
-  --text:         #EDE8DF;
-  --text-muted:   #8A8478;
-  --text-faint:   #4A4440;
-  --accent:       #C8A86A;
-  --accent-dim:   rgba(200, 168, 106, 0.1);
-  --accent-hover: #DFC07E;
+  --bg:           #080808;
+  --surface:      #101010;
+  --surface-2:    #161616;
+  --border:       #1e1e1e;
+  --border-light: #2c2c2c;
+  --text:         #ffffff;
+  --text-muted:   #888888;
+  --text-faint:   #3a3a3a;
+  --accent:       #E8703A;        /* orange — italic outline accent */
+  --accent-2:     #00DDB3;        /* cyan/teal — heading outline + links */
+  --accent-dim:   rgba(0, 221, 179, 0.06);
+  --accent-hover: #00F0C5;
 
-  /* Status (kept for admin/toast compatibility) */
+  /* Status colors (kept for admin/toast) */
   --ios-blue:   #60A5FA;
   --ios-green:  #4ADE80;
   --ios-red:    #F87171;
@@ -50,103 +51,150 @@ body {
 /* ========================
    Typography
    ======================== */
-.font-serif { font-family: "Playfair Display", Georgia, serif; }
+.font-display { font-family: 'Anton', sans-serif; }
+.font-serif   { font-family: 'Anton', sans-serif; }
+
+/* Solid heading line */
+.heading-bold {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  color: var(--text);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  display: block;
+}
+
+/* Outline italic heading line — cyan */
+.heading-outline {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--accent-2);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  display: block;
+}
+
+/* Outline italic heading line — orange */
+.heading-outline-orange {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--accent);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  display: block;
+}
+
+/* Decorative index label — still compact, but readable */
+.section-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
 /* ========================
-   Base card  (dark)
+   Card — sharp-edge dark
    ======================== */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-radius: 0;
 }
 
 .glass-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 0;
 }
 
 /* ========================
    Navigation
    ======================== */
 .ios-nav {
-  background: rgba(13, 12, 10, 0.88);
+  background: rgba(8, 8, 8, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
 
 /* ========================
-   Buttons
+   Buttons — ghost outline style
    ======================== */
 .ios-btn-primary {
-  background: var(--accent);
-  color: #0D0C0A;
-  border-radius: 8px;
-  font-weight: 600;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-light);
+  border-radius: 0;
+  font-weight: 500;
   font-size: 0.875rem;
-  padding: 10px 20px;
-  border: none;
+  padding: 11px 24px;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.12s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   text-decoration: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.03em;
 }
-.ios-btn-primary:hover  { opacity: 0.88; }
-.ios-btn-primary:active { opacity: 0.72; transform: scale(0.96); }
+.ios-btn-primary:hover  { border-color: var(--text); background: rgba(255,255,255,0.03); }
+.ios-btn-primary:active { opacity: 0.7; }
 
 .ios-btn-secondary {
   background: transparent;
-  color: var(--accent);
-  border: 1.5px solid var(--border-light);
-  border-radius: 8px;
-  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  font-weight: 500;
   font-size: 0.875rem;
-  padding: 9px 20px;
+  padding: 10px 24px;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+  transition: border-color 0.15s ease, color 0.15s ease;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   text-decoration: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.03em;
 }
-.ios-btn-secondary:hover  { border-color: var(--accent); background: var(--accent-dim); }
-.ios-btn-secondary:active { transform: scale(0.96); }
+.ios-btn-secondary:hover  { border-color: var(--border-light); color: var(--text); }
+.ios-btn-secondary:active { opacity: 0.7; }
 
 /* ========================
    Inputs  (dark)
    ======================== */
 .ios-input {
   background: var(--surface-2);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 0;
   padding: 11px 14px;
   font-size: 0.9rem;
   font-family: inherit;
   color: var(--text);
   width: 100%;
   outline: none;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease;
 }
-.ios-input:focus         { background: var(--surface); border-color: var(--accent); }
+.ios-input:focus         { border-color: var(--accent-2); }
 .ios-input::placeholder  { color: var(--text-faint); }
 
 /* ========================
-   Section label
+   Tag chip (jawe-style outlined)
    ======================== */
-.section-label {
+.tag-chip {
+  display: inline-block;
+  padding: 4px 11px;
+  border: 1px solid var(--border-light);
   font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 8px;
+  color: var(--text-muted);
+  background: transparent;
 }
 
 /* ========================
@@ -154,23 +202,23 @@ body {
    ======================== */
 .skill-pill {
   display: inline-block;
-  border-radius: 5px;
+  border-radius: 0;
   padding: 4px 10px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
 /* ========================
    Scrollbar
    ======================== */
-::-webkit-scrollbar          { width: 4px; }
+::-webkit-scrollbar          { width: 3px; }
 ::-webkit-scrollbar-track    { background: transparent; }
-::-webkit-scrollbar-thumb    { background: var(--border-light); border-radius: 2px; }
+::-webkit-scrollbar-thumb    { background: var(--border-light); border-radius: 0; }
 
 /* ========================
    Text selection
    ======================== */
-::selection { background: rgba(200, 168, 106, 0.2); }
+::selection { background: rgba(0, 221, 179, 0.15); }
 
 /* ========================
    Scrollbar hide
@@ -200,17 +248,20 @@ body {
 [data-admin] .card {
   background: #ffffff !important;
   border-color: #E5E5EA !important;
+  border-radius: 12px !important;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 
 [data-admin] .glass-card {
   background: #ffffff !important;
   border-color: #E5E5EA !important;
+  border-radius: 12px !important;
 }
 
 [data-admin] .ios-input {
   background: #F2F2F7 !important;
-  border-color: transparent !important;
+  border-color: #E5E5EA !important;
+  border-radius: 8px !important;
   color: #1C1C1E !important;
 }
 [data-admin] .ios-input:focus        { background: #ffffff !important; border-color: #007AFF !important; }
@@ -219,14 +270,20 @@ body {
 [data-admin] .ios-btn-primary {
   background: #007AFF !important;
   color: #ffffff !important;
+  border-color: #007AFF !important;
+  border-radius: 8px !important;
+  letter-spacing: 0.01em !important;
 }
+[data-admin] .ios-btn-primary:hover { opacity: 0.88 !important; }
 
 [data-admin] .ios-btn-secondary {
   color: #007AFF !important;
   border-color: #007AFF !important;
+  border-radius: 8px !important;
   background: transparent !important;
+  letter-spacing: 0.01em !important;
 }
-[data-admin] .ios-btn-secondary:hover { background: rgba(0,122,255,0.06) !important; }
+[data-admin] .ios-btn-secondary:hover { background: rgba(0,122,255,0.06) !important; color: #007AFF !important; }
 
 [data-admin] .ios-nav {
   background: rgba(255,255,255,0.92) !important;

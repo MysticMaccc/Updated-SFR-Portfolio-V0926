@@ -2,29 +2,13 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Github, Star, Images } from 'lucide-react';
+import { ExternalLink, Github, Images } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import type { Project, ProjectImage } from '@/types';
 
 const ProjectGallery = dynamic(() => import('./ProjectGallery'), { ssr: false });
 
 const FILTERS = ['All', 'Web', 'Mobile'];
-
-const CATEGORY_BADGE: Record<string, { bg: string; text: string }> = {
-  web:    { bg: 'rgba(96,165,250,0.12)',  text: '#60A5FA' },
-  mobile: { bg: 'rgba(74,222,128,0.1)',   text: '#4ADE80' },
-  other:  { bg: 'rgba(200,168,106,0.1)',  text: '#C8A86A' },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
-};
-
-const stagger = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
-};
 
 interface Props {
   projects: Project[];
@@ -56,166 +40,178 @@ export default function Projects({ projects, projectImages = {} }: Props) {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-56px)] py-14 sm:py-20 px-4 sm:px-6" style={{ background: 'var(--bg)' }}>
-        <div className="max-w-5xl mx-auto">
+      <div className="min-h-[calc(100vh-48px)] py-14 sm:py-20 px-5 sm:px-10 relative z-10" style={{ background: 'var(--bg)' }}>
+        <div className="max-w-[1400px] mx-auto">
 
-          {/* Page header */}
-          <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-8 sm:mb-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: 'var(--accent)' }}>Projects</p>
-            <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>Portfolio</h1>
-            <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>
-              {projects.length} project{projects.length !== 1 ? 's' : ''}
-            </p>
-          </motion.div>
+          {/* Section marker */}
+          <div className="flex items-center justify-between mb-12 pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
+            <span className="section-meta" style={{ color: 'var(--text-faint)' }}>[ 06 ] — Selected Work</span>
+            <span className="section-meta" style={{ color: 'var(--text-faint)' }}>Chapter Three</span>
+          </div>
 
-          {/* Filter tabs */}
-          <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0.1 }} className="mb-8 sm:mb-10">
-            <div className="inline-flex p-1 rounded-xl" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          {/* Heading + filter row */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.5 }}
+            >
+              <span className="heading-bold text-[clamp(2.5rem,7vw,6rem)]">PASSION</span>
+              <span className="heading-outline text-[clamp(2.5rem,7vw,6rem)]">PROJECTS</span>
+              <p className="text-base mt-4 max-w-sm leading-relaxed" style={{ color: 'var(--text-muted)', lineHeight: '1.7' }}>
+                A curated selection of work spanning web apps, mobile interfaces, and SaaS dashboards.
+              </p>
+            </motion.div>
+
+            {/* Filter tabs */}
+            <div className="flex items-center gap-1 flex-shrink-0">
               {FILTERS.map(f => (
                 <button
                   key={f}
                   onClick={() => { setFilter(f); setShowAll(false); }}
-                  className="relative px-5 py-1.5 rounded-[9px] text-sm font-medium transition-colors"
-                  style={{ color: filter === f ? '#0D0C0A' : 'var(--text-muted)' }}
+                  className="text-xs font-semibold uppercase tracking-wider px-4 py-2 transition-colors"
+                  style={{
+                    color: filter === f ? 'var(--text)' : 'var(--text-faint)',
+                    borderBottom: `2px solid ${filter === f ? 'var(--accent-2)' : 'transparent'}`,
+                    background: 'transparent',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={e => { if (filter !== f) (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+                  onMouseLeave={e => { if (filter !== f) (e.currentTarget as HTMLElement).style.color = 'var(--text-faint)'; }}
                 >
-                  {filter === f && (
-                    <motion.span
-                      layoutId="filter-segment"
-                      className="absolute inset-0 rounded-[9px]"
-                      style={{ background: 'var(--accent)' }}
-                      transition={{ type: 'spring', stiffness: 480, damping: 34 }}
-                    />
-                  )}
-                  <span className="relative" style={{ fontWeight: filter === f ? 600 : 500 }}>{f}</span>
+                  {f}
                 </button>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Grid */}
-          <motion.div variants={stagger} initial="hidden" animate="show" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Project grid — 2 columns */}
+          <div className="grid sm:grid-cols-2 gap-px" style={{ background: 'var(--border)' }}>
             <AnimatePresence mode="popLayout">
-              {visible.map(project => {
-                const badge = CATEGORY_BADGE[project.category] ?? CATEGORY_BADGE.other;
+              {visible.map((project) => {
                 const images = projectImages[project.id] ?? [];
                 const hasImages = images.length > 0;
                 const coverImage = images[0]?.url;
+                const displayIndex = filtered.indexOf(project);
 
                 return (
-                  <motion.div
+                  <motion.article
                     key={project.id}
-                    variants={fadeUp}
                     layout
-                    className="card flex flex-col transition-all duration-200 hover:-translate-y-1 overflow-hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ background: 'var(--bg)' }}
                   >
-                    {/* Image banner */}
+                    {/* Number + line */}
+                    <div className="flex items-center gap-3 px-5 pt-5 pb-3">
+                      <span className="section-meta" style={{ color: 'var(--accent-2)' }}>
+                        # {String(displayIndex + 1).padStart(2, '0')}
+                      </span>
+                      <div className="flex-1 h-px" style={{ background: 'var(--border-light)' }} />
+                      {hasImages && (
+                        <button
+                          onClick={() => openGallery(project, 0)}
+                          className="flex items-center gap-1.5 text-xs font-medium transition-colors"
+                          style={{ color: 'var(--text-faint)', cursor: 'pointer' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-2)')}
+                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-faint)')}
+                        >
+                          <Images className="w-3.5 h-3.5" />
+                          {images.length} photo{images.length > 1 ? 's' : ''}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Project image */}
                     {hasImages && (
                       <div
-                        className="relative w-full aspect-video overflow-hidden cursor-pointer group"
+                        className="w-full aspect-video overflow-hidden cursor-pointer relative group"
                         onClick={() => openGallery(project, 0)}
+                        style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
                       >
                         <img
                           src={coverImage}
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2 rounded-xl px-3 py-1.5"
-                            style={{ background: 'rgba(13,12,10,0.7)', border: '1px solid rgba(200,168,106,0.3)' }}>
-                            <Images className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
-                            <span className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>View Photos</span>
-                          </div>
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs font-semibold uppercase tracking-wider px-4 py-2"
+                            style={{ border: '1px solid var(--accent-2)', color: 'var(--accent-2)' }}>
+                            View Photos
+                          </span>
                         </div>
-                        {images.length > 1 && (
-                          <div className="absolute top-2 right-2 flex items-center gap-1 rounded-lg px-2 py-0.5"
-                            style={{ background: 'rgba(13,12,10,0.7)', border: '1px solid var(--border)' }}>
-                            <Images className="w-3 h-3" style={{ color: 'var(--accent)' }} />
-                            <span className="text-[10px] font-semibold" style={{ color: 'var(--accent)' }}>{images.length}</span>
-                          </div>
-                        )}
                       </div>
                     )}
 
-                    <div className="p-5 flex flex-col flex-1">
-                      {/* Top row */}
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-bold uppercase tracking-wider rounded-lg px-2.5 py-1"
-                          style={{ background: badge.bg, color: badge.text }}>
-                          {project.category}
-                        </span>
-                        {project.featured && (
-                          <Star className="w-3.5 h-3.5" style={{ fill: 'var(--accent)', color: 'var(--accent)' }} />
-                        )}
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="font-semibold text-sm sm:text-base mb-2 leading-snug" style={{ color: 'var(--text)' }}>
+                    {/* Card body */}
+                    <div className="p-5">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-3 leading-tight" style={{ color: 'var(--text)' }}>
                         {project.title}
                       </h3>
 
-                      {/* Description */}
-                      <p className="text-xs sm:text-sm leading-relaxed flex-1 mb-4 line-clamp-3" style={{ color: 'var(--text-muted)' }}>
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="tag-chip">{project.category}</span>
+                        {project.tech_stack.slice(0, 3).map(t => (
+                          <span key={t} className="tag-chip">{t}</span>
+                        ))}
+                      </div>
+
+                      <p className="text-sm leading-relaxed mb-5 line-clamp-2" style={{ color: 'var(--text-muted)', lineHeight: '1.7' }}>
                         {project.description}
                       </p>
 
-                      {/* Tech stack */}
-                      {project.tech_stack.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-4">
-                          {project.tech_stack.map(t => (
-                            <span key={t} className="text-[10px] font-medium rounded-md px-2 py-0.5"
-                              style={{ background: 'var(--surface-2)', color: 'var(--text-faint)', border: '1px solid var(--border)' }}>
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Bottom row */}
-                      <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-                        <div className="flex gap-4">
-                          {project.url && (
-                            <a href={project.url} target="_blank" rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
-                              style={{ color: 'var(--accent)' }}>
-                              <ExternalLink className="w-3.5 h-3.5" />
-                              Live
-                            </a>
-                          )}
-                          {project.github_url && (
-                            <a href={project.github_url} target="_blank" rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-xs font-medium transition-colors"
-                              style={{ color: 'var(--text-muted)' }}
-                              onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
-                              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
-                              <Github className="w-3.5 h-3.5" />
-                              Source
-                            </a>
-                          )}
-                        </div>
-
-                        {hasImages && (
-                          <button
-                            onClick={() => openGallery(project, 0)}
-                            className="flex items-center gap-1 text-xs font-medium transition-colors"
-                            style={{ color: 'var(--text-faint)' }}
-                            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-faint)')}>
-                            <Images className="w-3.5 h-3.5" />
-                            {images.length} photo{images.length > 1 ? 's' : ''}
-                          </button>
+                      {/* Links */}
+                      <div className="flex flex-wrap gap-3">
+                        {project.url && (
+                          <a
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider px-4 py-2 transition-colors"
+                            style={{ border: '1px solid var(--accent-2)', color: 'var(--accent-2)', textDecoration: 'none' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(0,221,179,0.06)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                          >
+                            Live Demo
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        {project.github_url && (
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider px-4 py-2 transition-colors"
+                            style={{ border: '1px solid var(--border-light)', color: 'var(--text-muted)', textDecoration: 'none' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-light)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+                          >
+                            <Github className="w-3.5 h-3.5" />
+                            GitHub
+                          </a>
                         )}
                       </div>
                     </div>
-                  </motion.div>
+                  </motion.article>
                 );
               })}
             </AnimatePresence>
-          </motion.div>
+          </div>
 
+          {/* Show All / Less */}
           {filtered.length > 6 && (
-            <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0.4 }} className="mt-8 text-center">
-              <button onClick={() => setShowAll(!showAll)} className="ios-btn-secondary text-sm">
-                {showAll ? 'Show Less' : `Show All ${filtered.length}`}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 flex justify-center"
+            >
+              <button onClick={() => setShowAll(!showAll)} className="ios-btn-secondary">
+                {showAll ? 'Show Less' : `Show All ${filtered.length} Projects →`}
               </button>
             </motion.div>
           )}
